@@ -6,6 +6,56 @@
 [ext_resource type="Texture2D" uid="uid://yxtldabycfw5" path="res://Assets/Cards/cardSpadesA.png" id="4_lor7a"]
 [ext_resource type="Texture2D" uid="uid://scto7bal4hdg" path="res://Assets/Cards/cardJoker.png" id="5_qvrkf"]
 [ext_resource type="Texture2D" uid="uid://b3bjcvh863p7g" path="res://Assets/Cards/cardHeartsA.png" id="6_o5ne2"]
+[ext_resource type="AudioStream" uid="uid://c5c38bdsflls2" path="res://Assets/Audio/cardPlace1.ogg" id="7_kcoml"]
+[ext_resource type="AudioStream" uid="uid://d7buluvsuvff" path="res://Assets/Audio/dieThrow1.ogg" id="8_kcoml"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kcoml"]
+font_size = 32
+outline_size = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_o0pga"]
+font_size = 32
+outline_size = 4
+
+[sub_resource type="LabelSettings" id="LabelSettings_furlt"]
+font_size = 32
+outline_size = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kcoml"]
+bg_color = Color(0, 0.4587235, 0.7739032, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_furlt"]
+bg_color = Color(0, 0.4674126, 0, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0pga"]
+bg_color = Color(0.58720034, 0.79445696, 0.99999946, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 20
 
 [node name="Main" type="Node2D" unique_id=1743364567]
 script = ExtResource("1_opsjl")
@@ -25,3 +75,69 @@ columns = 4
 [node name="CenterContainer" type="CenterContainer" parent="CanvasLayer" unique_id=647363995]
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="TextoEstado" type="Label" parent="CanvasLayer" unique_id=2099620201]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -155.0
+offset_top = -61.0
+offset_right = 148.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Turno del Jugador 1"
+label_settings = SubResource("LabelSettings_kcoml")
+
+[node name="TextoTiempo" type="Label" parent="CanvasLayer" unique_id=171931916]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -128.0
+offset_top = 7.0
+offset_right = -20.0
+offset_bottom = 30.0
+grow_horizontal = 0
+text = "Tiempo: 00:00"
+label_settings = SubResource("LabelSettings_o0pga")
+
+[node name="TextoPuntos" type="Label" parent="CanvasLayer" unique_id=969256589]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = -62.0
+offset_right = 169.0
+offset_bottom = -17.0
+grow_vertical = 0
+text = "J1: 0 - J2: 0"
+label_settings = SubResource("LabelSettings_furlt")
+
+[node name="BotonReiniciar" type="Button" parent="CanvasLayer" unique_id=1545377846]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -195.0
+offset_top = -54.0
+offset_right = 189.0
+offset_bottom = 47.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_kcoml")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_furlt")
+theme_override_styles/hover = SubResource("StyleBoxFlat_o0pga")
+text = "JUGAR OTRA VEZ"
+
+[node name="AudioVoltear" type="AudioStreamPlayer" parent="." unique_id=1900230775]
+stream = ExtResource("7_kcoml")
+
+[node name="AudioPar" type="AudioStreamPlayer" parent="." unique_id=1950521347]
+stream = ExtResource("8_kcoml")
+
+[connection signal="pressed" from="CanvasLayer/BotonReiniciar" to="." method="_on_boton_reiniciar_pressed"]
