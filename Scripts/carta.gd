@@ -2,32 +2,43 @@ extends TextureButton
 
 class_name Carta
 
-# Señal para avisarle al cerebro que nos clickearon
 signal carta_seleccionada(carta)
 
-var id_pareja = 0 # ID para saber si es par (ej: 1 con 1)
-var esta_volteada = false
+var id_pareja := 0
+var esta_volteada := false
 
-func _ready():
-	# Conectamos el clic del propio botón
+@onready var sprite_frente: Sprite2D = $Sprite2D
+
+func _ready() -> void:
 	pressed.connect(_al_presionar)
-	# Escondemos la figura al inicio (se ve el reverso)
-	$Sprite2D.visible = false
+	sprite_frente.visible = false
 
-func configurar(id, textura_imagen):
+func configurar(id: int, textura_imagen: Texture2D) -> void:
 	id_pareja = id
-	$Sprite2D.texture = textura_imagen
+	sprite_frente.texture = textura_imagen
 
-func _al_presionar():
+func _al_presionar() -> void:
 	if not esta_volteada:
 		emit_signal("carta_seleccionada", self)
 
-func voltear():
+func voltear() -> void:
 	esta_volteada = true
-	disabled = true # Desactivar clic
-	$Sprite2D.visible = true # Mostrar figura
+	disabled = true
+	var tween := create_tween()
+	tween.tween_property(self, "scale:x", 0.0, 0.1)
+	tween.tween_callback(func(): sprite_frente.visible = true)
+	tween.tween_property(self, "scale:x", 1.0, 0.1)
 
-func ocultar():
+func ocultar_carta() -> void:
 	esta_volteada = false
-	disabled = false # Reactivar clic
-	$Sprite2D.visible = false
+	disabled = false
+	var tween := create_tween()
+	tween.tween_property(self, "scale:x", 0.0, 0.1)
+	tween.tween_callback(func(): sprite_frente.visible = false)
+	tween.tween_property(self, "scale:x", 1.0, 0.1)
+
+func resaltar_par() -> void:
+	# Destello dorado al encontrar par
+	var tween := create_tween()
+	tween.tween_property(self, "modulate", Color(1.4, 1.2, 0.4), 0.15)
+	tween.tween_property(self, "modulate", Color.WHITE, 0.25)
