@@ -1,5 +1,6 @@
 extends Node2D
 
+
 # --- CONFIGURACIÓN ---
 @export var escena_carta: PackedScene
 @export var texturas_cartas: Array[Texture2D]
@@ -26,11 +27,19 @@ var juego_terminado := false
 var contador_turnos := 0
 
 func _ready() -> void:
-	parejas_totales = texturas_cartas.size()
+	# Leer dificultad y nombres desde el menú
+	parejas_totales = GameData.parejas
+
+	# Ajustar columnas del grid según dificultad
+	# 8 pares = 4x4, 12 pares = 4x6, 16 pares = 4x8
+	var columnas := 4
+	grid_container.columns = columnas
+
 	turn_manager.iniciar()
 	turn_manager.turno_cambiado.connect(_on_turno_cambiado)
 	ui_manager.actualizar_puntos(0, 0, 0)
 	ui_manager.mostrar_turno(turn_manager.obtener_turno())
+	ui_manager.actualizar_nombres(GameData.nombre_j1, GameData.nombre_j2)
 	generar_tablero()
 
 func _process(delta: float) -> void:
@@ -50,7 +59,9 @@ func generar_tablero() -> void:
 	for id in ids:
 		var nueva_carta: Carta = escena_carta.instantiate()
 		grid_container.add_child(nueva_carta)
-		nueva_carta.configurar(id, texturas_cartas[id])
+		# Recicla texturas si hay más pares que texturas disponibles
+		var textura_idx := id % texturas_cartas.size()
+		nueva_carta.configurar(id, texturas_cartas[textura_idx])
 		nueva_carta.carta_seleccionada.connect(_on_carta_tocada)
 		cartas_en_mesa.append(nueva_carta)
 

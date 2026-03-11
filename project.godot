@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="MemoNet"
-run/main_scene="uid://ca1e8epiy20lo"
+run/main_scene="res://Escenas/Menu.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameData="*uid://bcqrno3eu31s0"
 
 [display]
 

@@ -7,11 +7,11 @@ class_name UIManager
 @export var texto_tiempo: Label
 @export var texto_puntos: Label
 @export var boton_reiniciar: Button
-@export var grid_container: GridContainer  # para rotar el tablero
+@export var grid_container: GridContainer
 
 # Colores de jugadores
-const COLOR_J1 := Color(0.2, 0.6, 1.0)   # Azul
-const COLOR_J2 := Color(1.0, 0.8, 0.2)   # Naranja
+const COLOR_J1 := Color(0.2, 0.6, 1.0)
+const COLOR_J2 := Color(1.0, 0.8, 0.2)
 
 # ── TURNO ──
 func mostrar_turno(jugador: int) -> void:
@@ -42,7 +42,14 @@ func mostrar_tira_otra_vez() -> void:
 
 # ── MARCADORES ──
 func actualizar_puntos(puntos_j1: int, puntos_j2: int, turnos: int) -> void:
-	texto_puntos.text = "J1: %d  |  J2: %d  (Turnos: %d)" % [puntos_j1, puntos_j2, turnos]
+	texto_puntos.text = "%s: %d  |  %s: %d  (Turnos: %d)" % [
+		GameData.nombre_j1, puntos_j1,
+		GameData.nombre_j2, puntos_j2,
+		turnos
+	]
+
+func actualizar_nombres(nombre_j1: String, nombre_j2: String) -> void:
+	texto_puntos.text = "%s: 0  |  %s: 0" % [nombre_j1, nombre_j2]
 
 # ── TIEMPO ──
 func actualizar_tiempo(segundos: float) -> void:
@@ -54,10 +61,10 @@ func actualizar_tiempo(segundos: float) -> void:
 func mostrar_fin(puntos_j1: int, puntos_j2: int) -> void:
 	texto_tiempo.modulate = Color.YELLOW
 	if puntos_j1 > puntos_j2:
-		texto_estado.text = "¡GANÓ EL JUGADOR 1!"
+		texto_estado.text = "¡GANÓ %s!" % GameData.nombre_j1
 		texto_estado.modulate = COLOR_J1
 	elif puntos_j2 > puntos_j1:
-		texto_estado.text = "¡GANÓ EL JUGADOR 2!"
+		texto_estado.text = "¡GANÓ %s!" % GameData.nombre_j2
 		texto_estado.modulate = COLOR_J2
 	else:
 		texto_estado.text = "¡EMPATE!"

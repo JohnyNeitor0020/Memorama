@@ -1,0 +1,333 @@
+[gd_scene format=3 uid="uid://bn6mo0m8hld8j"]
+
+[ext_resource type="Script" uid="uid://dnme6isfs0n63" path="res://Scripts/Menu.gd" id="1_menu"]
+[ext_resource type="Texture2D" uid="uid://60hn1u3bpdee" path="res://Assets/Cards/fondoss.png" id="2_fondo"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_titulo"]
+font_size = 36
+font_color = Color(0.96, 0.84, 0.3, 1)
+outline_size = 3
+outline_color = Color(0.12, 0.06, 0, 0.9)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel_j1"]
+bg_color = Color(0.04, 0.19, 0.08, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_bottom = 2
+border_color = Color(0.72, 0.58, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="LabelSettings" id="LabelSettings_lbl_jugador"]
+font_size = 19
+font_color = Color(0.96, 0.84, 0.3, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_input_j1"]
+content_margin_left = 14.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+bg_color = Color(0.04, 0.19, 0.08, 0.92)
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.72, 0.58, 0.2, 1)
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel_j2"]
+bg_color = Color(0.04, 0.19, 0.08, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_bottom = 2
+border_color = Color(0.72, 0.58, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_input_j2"]
+content_margin_left = 14.0
+content_margin_top = 4.0
+content_margin_right = 12.0
+content_margin_bottom = 4.0
+bg_color = Color(0.04, 0.19, 0.08, 0.92)
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.72, 0.58, 0.2, 1)
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dif_panel"]
+bg_color = Color(0.04, 0.17, 0.07, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.72, 0.58, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="LabelSettings" id="LabelSettings_dif_titulo"]
+font_size = 14
+font_color = Color(0.96, 0.84, 0.3, 1)
+outline_size = 2
+outline_color = Color(0, 0, 0, 0.8)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_dif_off"]
+bg_color = Color(0.05, 0.21, 0.09, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7, 0.56, 0.18, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_dif_on"]
+bg_color = Color(0.5, 0.33, 0.06, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.96, 0.84, 0.3, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0.96, 0.84, 0.3, 0.25)
+shadow_size = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_jugar"]
+bg_color = Color(0.42, 0.28, 0.05, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.88, 0.72, 0.24, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0, 0, 0, 0.45)
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_esquina"]
+bg_color = Color(0.05, 0.19, 0.08, 0.78)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7, 0.56, 0.18, 0.85)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="Menu" type="Node2D" unique_id=2096017700]
+script = ExtResource("1_menu")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=517553174]
+
+[node name="Fondo" type="TextureRect" parent="CanvasLayer" unique_id=1053564543]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -64.0
+offset_top = -67.0
+offset_right = 69.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_fondo")
+expand_mode = 1
+
+[node name="Titulo" type="Label" parent="CanvasLayer" unique_id=1956168313]
+offset_top = 68.0
+offset_right = 1280.0
+offset_bottom = 128.0
+text = "MENÚ DE INICIO DE CASINO"
+label_settings = SubResource("LabelSettings_titulo")
+horizontal_alignment = 1
+
+[node name="FilaJ1" type="HBoxContainer" parent="CanvasLayer" unique_id=561947178]
+offset_left = 390.0
+offset_top = 195.0
+offset_right = 890.0
+offset_bottom = 245.0
+theme_override_constants/separation = 0
+
+[node name="LblJ1Panel" type="PanelContainer" parent="CanvasLayer/FilaJ1" unique_id=1767213667]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel_j1")
+
+[node name="MarginJ1" type="MarginContainer" parent="CanvasLayer/FilaJ1/LblJ1Panel" unique_id=523263063]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
+
+[node name="LblJ1" type="Label" parent="CanvasLayer/FilaJ1/LblJ1Panel/MarginJ1" unique_id=2087391610]
+layout_mode = 2
+text = "Jugador 1:"
+label_settings = SubResource("LabelSettings_lbl_jugador")
+vertical_alignment = 1
+
+[node name="InputJ1" type="LineEdit" parent="CanvasLayer/FilaJ1" unique_id=292654506]
+custom_minimum_size = Vector2(350, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.88, 0.6, 1)
+theme_override_colors/font_placeholder_color = Color(0.62, 0.56, 0.36, 0.7)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_input_j1")
+theme_override_styles/focus = SubResource("StyleBoxFlat_input_j1")
+placeholder_text = "Ingresa Nombre"
+
+[node name="FilaJ2" type="HBoxContainer" parent="CanvasLayer" unique_id=530066512]
+offset_left = 390.0
+offset_top = 275.0
+offset_right = 890.0
+offset_bottom = 325.0
+theme_override_constants/separation = 0
+
+[node name="LblJ2Panel" type="PanelContainer" parent="CanvasLayer/FilaJ2" unique_id=478138517]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel_j2")
+
+[node name="MarginJ2" type="MarginContainer" parent="CanvasLayer/FilaJ2/LblJ2Panel" unique_id=615586996]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 4
+
+[node name="LblJ2" type="Label" parent="CanvasLayer/FilaJ2/LblJ2Panel/MarginJ2" unique_id=1737585332]
+layout_mode = 2
+text = "Jugador 2:"
+label_settings = SubResource("LabelSettings_lbl_jugador")
+vertical_alignment = 1
+
+[node name="InputJ2" type="LineEdit" parent="CanvasLayer/FilaJ2" unique_id=650562776]
+custom_minimum_size = Vector2(350, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.95, 0.88, 0.6, 1)
+theme_override_colors/font_placeholder_color = Color(0.62, 0.56, 0.36, 0.7)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_input_j2")
+theme_override_styles/focus = SubResource("StyleBoxFlat_input_j2")
+placeholder_text = "Ingresa Nombre"
+
+[node name="PanelDificultad" type="PanelContainer" parent="CanvasLayer" unique_id=192698623]
+offset_left = 390.0
+offset_top = 368.0
+offset_right = 890.0
+offset_bottom = 476.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dif_panel")
+
+[node name="MarginDif" type="MarginContainer" parent="CanvasLayer/PanelDificultad" unique_id=1448500816]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxDif" type="VBoxContainer" parent="CanvasLayer/PanelDificultad/MarginDif" unique_id=1602348448]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LblDificultad" type="Label" parent="CanvasLayer/PanelDificultad/MarginDif/VBoxDif" unique_id=1562203198]
+layout_mode = 2
+text = "SELECCIONAR DIFICULTAD"
+label_settings = SubResource("LabelSettings_dif_titulo")
+horizontal_alignment = 1
+
+[node name="HBoxBotones" type="HBoxContainer" parent="CanvasLayer/PanelDificultad/MarginDif/VBoxDif" unique_id=1150982765]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="BtnFacil" type="Button" parent="CanvasLayer/PanelDificultad/MarginDif/VBoxDif/HBoxBotones" unique_id=1428881998]
+custom_minimum_size = Vector2(130, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.82, 0.52, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_dif_off")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_dif_off")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_dif_off")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_dif_off")
+text = "FÁCIL"
+
+[node name="BtnNormal" type="Button" parent="CanvasLayer/PanelDificultad/MarginDif/VBoxDif/HBoxBotones" unique_id=576048015]
+custom_minimum_size = Vector2(130, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.62, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_dif_on")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_dif_on")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_dif_on")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_dif_on")
+text = "MEDIA"
+
+[node name="BtnDificil" type="Button" parent="CanvasLayer/PanelDificultad/MarginDif/VBoxDif/HBoxBotones" unique_id=222335614]
+custom_minimum_size = Vector2(130, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.82, 0.52, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_dif_off")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_dif_off")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_dif_off")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_dif_off")
+text = "DIFÍCIL"
+
+[node name="BtnJugar" type="Button" parent="CanvasLayer" unique_id=128843275]
+offset_left = 480.0
+offset_top = 490.0
+offset_right = 800.0
+offset_bottom = 544.0
+theme_override_colors/font_color = Color(0.97, 0.9, 0.55, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_jugar")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_jugar")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_jugar")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_jugar")
+text = "◆  EMPEZAR JUEGO  ◆"
+
+[node name="BtnAjustes" type="Button" parent="CanvasLayer" unique_id=602079933]
+offset_left = 44.0
+offset_top = 622.0
+offset_right = 154.0
+offset_bottom = 662.0
+theme_override_colors/font_color = Color(0.88, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_esquina")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_esquina")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_esquina")
+text = "AJUSTES"
+
+[node name="BtnSalir" type="Button" parent="CanvasLayer" unique_id=1117400015]
+offset_left = 1126.0
+offset_top = 622.0
+offset_right = 1236.0
+offset_bottom = 662.0
+theme_override_colors/font_color = Color(0.88, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_esquina")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_esquina")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_esquina")
+text = "SALIR"
+
+[connection signal="pressed" from="CanvasLayer/PanelDificultad/MarginDif/VBoxDif/HBoxBotones/BtnFacil" to="." method="_on_btn_facil_pressed"]
+[connection signal="pressed" from="CanvasLayer/PanelDificultad/MarginDif/VBoxDif/HBoxBotones/BtnNormal" to="." method="_on_btn_normal_pressed"]
+[connection signal="pressed" from="CanvasLayer/PanelDificultad/MarginDif/VBoxDif/HBoxBotones/BtnDificil" to="." method="_on_btn_dificil_pressed"]
+[connection signal="pressed" from="CanvasLayer/BtnJugar" to="." method="_on_btn_jugar_pressed"]
+[connection signal="pressed" from="CanvasLayer/BtnSalir" to="." method="_on_btn_salir_pressed"]
