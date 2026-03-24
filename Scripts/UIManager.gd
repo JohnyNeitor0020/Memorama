@@ -10,9 +10,10 @@ class_name UIManager
 @export var grid_container: GridContainer
 
 # Colores de jugadores
-const COLOR_J1 := Color(0.2, 0.6, 1.0)
-const COLOR_J2 := Color(1.0, 0.8, 0.2)
-
+#const COLOR_J1 := Color(0.2, 0.6, 1.0)
+#const COLOR_J2 := Color(1.0, 0.8, 0.2)
+const COLOR_J1 := Color(0.90, 0.90, 0.90) # Plata / Blanco elegante
+const COLOR_J2 := Color(0.96, 0.84, 0.30)
 # ── TURNO ──
 func mostrar_turno(jugador: int) -> void:
 	texto_estado.text = "Turno del Jugador %d" % jugador

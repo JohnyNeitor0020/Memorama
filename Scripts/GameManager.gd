@@ -1,6 +1,5 @@
 extends Node2D
 
-
 # --- CONFIGURACIÓN ---
 @export var escena_carta: PackedScene
 @export var texturas_cartas: Array[Texture2D]
@@ -27,16 +26,29 @@ var juego_terminado := false
 var contador_turnos := 0
 
 func _ready() -> void:
-	# Leer dificultad y nombres desde el menú
+	# 1. Leer dificultad desde el menú
 	parejas_totales = GameData.parejas
 
-	# Ajustar columnas del grid según dificultad
-	# 8 pares = 4x4, 12 pares = 4x6, 16 pares = 4x8
-	var columnas := 4
-	grid_container.columns = columnas
+	# 2. Evitar que se salgan de la mesa (Ajustar columnas y escala)
+	grid_container.pivot_offset = grid_container.size / 2.0
+	
+	if parejas_totales <= 8:
+		grid_container.columns = 4  # 4x4 (16 cartas)
+		grid_container.scale = Vector2(0.6, 0.6) # Tamaño normal
+	elif parejas_totales <= 12:
+		grid_container.columns = 6  # 6x4 (24 cartas)
+		grid_container.scale = Vector2(0.6, 0.6) # Un poco más chicas
+	else:
+		grid_container.columns = 8  # 8x4 (32 cartas)
+		grid_container.scale = Vector2(0.65, 0.65) # Más chicas para que quepan
 
+	# 3. Iniciar juego
 	turn_manager.iniciar()
 	turn_manager.turno_cambiado.connect(_on_turno_cambiado)
+	
+	# Asegurar que el botón de reiniciar empiece oculto
+	ui_manager.boton_reiniciar.hide()
+	
 	ui_manager.actualizar_puntos(0, 0, 0)
 	ui_manager.mostrar_turno(turn_manager.obtener_turno())
 	ui_manager.actualizar_nombres(GameData.nombre_j1, GameData.nombre_j2)
@@ -50,6 +62,13 @@ func _process(delta: float) -> void:
 
 # ── TABLERO ──
 func generar_tablero() -> void:
+	var num_texturas = texturas_cartas.size()
+	
+	# CORRECCIÓN DE PARES: Si pides 16 pares pero solo hay 13 fotos,
+	# el juego se limitará a 13 pares para no crear "falsos positivos" y romper la lógica.
+	if parejas_totales > num_texturas:
+		parejas_totales = num_texturas
+
 	var ids: Array[int] = []
 	for i in range(parejas_totales):
 		ids.append(i)
@@ -59,9 +78,8 @@ func generar_tablero() -> void:
 	for id in ids:
 		var nueva_carta: Carta = escena_carta.instantiate()
 		grid_container.add_child(nueva_carta)
-		# Recicla texturas si hay más pares que texturas disponibles
-		var textura_idx := id % texturas_cartas.size()
-		nueva_carta.configurar(id, texturas_cartas[textura_idx])
+		# Le asignamos directamente la textura (sin la fórmula que rompía el juego)
+		nueva_carta.configurar(id, texturas_cartas[id])
 		nueva_carta.carta_seleccionada.connect(_on_carta_tocada)
 		cartas_en_mesa.append(nueva_carta)
 

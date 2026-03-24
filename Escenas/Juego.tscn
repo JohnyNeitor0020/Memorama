@@ -2,16 +2,29 @@
 
 [ext_resource type="Script" uid="uid://bxeqg3edkskb2" path="res://Scripts/GameManager.gd" id="1_opsjl"]
 [ext_resource type="PackedScene" uid="uid://dinie86sbrdn3" path="res://Escenas/carta.tscn" id="2_tourb"]
-[ext_resource type="Texture2D" uid="uid://bmbd81n7r6h7o" path="res://Assets/Cards/cardSpadesQ.png" id="3_furlt"]
-[ext_resource type="Texture2D" uid="uid://yxtldabycfw5" path="res://Assets/Cards/cardSpadesA.png" id="4_lor7a"]
+[ext_resource type="Texture2D" uid="uid://b2kbub0r5i1ff" path="res://Assets/Cards/cardClubs2.png" id="4_pv33b"]
+[ext_resource type="Texture2D" uid="uid://bncxf72aaxwf8" path="res://Assets/Cards/cardClubs3.png" id="5_ncais"]
 [ext_resource type="Texture2D" uid="uid://scto7bal4hdg" path="res://Assets/Cards/cardJoker.png" id="5_qvrkf"]
-[ext_resource type="Texture2D" uid="uid://b3bjcvh863p7g" path="res://Assets/Cards/cardHeartsA.png" id="6_o5ne2"]
+[ext_resource type="Texture2D" uid="uid://buqqhyrbp66h5" path="res://Assets/Cards/cardClubs4.png" id="6_ggmfd"]
 [ext_resource type="AudioStream" uid="uid://c5c38bdsflls2" path="res://Assets/Audio/cardPlace1.ogg" id="7_kcoml"]
+[ext_resource type="Texture2D" uid="uid://dq8hwrr4m6plw" path="res://Assets/Cards/cardClubs5.png" id="7_m1bio"]
 [ext_resource type="FontFile" uid="uid://dborvqcqo8hy6" path="res://Assets/Playball/Playball-Regular.ttf" id="7_qvrkf"]
+[ext_resource type="Texture2D" uid="uid://cgwaj87y4x8b6" path="res://Assets/Cards/cardClubs6.png" id="8_8j2aa"]
 [ext_resource type="AudioStream" uid="uid://d7buluvsuvff" path="res://Assets/Audio/dieThrow1.ogg" id="8_kcoml"]
 [ext_resource type="FontFile" uid="uid://7ep3gqf7olg6" path="res://Assets/GFS_Didot/GFSDidot-Regular.ttf" id="8_o5ne2"]
 [ext_resource type="Script" uid="uid://d7kaq34457la" path="res://Scripts/TurnManager.gd" id="9_furlt"]
+[ext_resource type="Texture2D" uid="uid://crtwj0t1dgknj" path="res://Assets/Cards/cardClubs7.png" id="9_iu0vo"]
+[ext_resource type="Texture2D" uid="uid://3gneyw3cvkab" path="res://Assets/Cards/cardClubs8.png" id="10_0t8yp"]
 [ext_resource type="Script" uid="uid://dfnlws18cadl5" path="res://Scripts/UIManager.gd" id="10_lor7a"]
+[ext_resource type="Texture2D" uid="uid://duu2noywgjxvk" path="res://Assets/Cards/cardClubs9.png" id="11_kkfp8"]
+[ext_resource type="Texture2D" uid="uid://bwnkl15l53vlp" path="res://Assets/Cards/cardClubsA.png" id="12_rfcd8"]
+[ext_resource type="Texture2D" uid="uid://ctepbwm7aokd7" path="res://Assets/Cards/cardClubsJ.png" id="13_l5ic0"]
+[ext_resource type="Texture2D" uid="uid://ceg3718xqidm4" path="res://Assets/Cards/cardHearts5.png" id="14_sa3mb"]
+[ext_resource type="Texture2D" uid="uid://d4g688ueypsxq" path="res://Assets/Cards/cardHearts8.png" id="15_5cj7p"]
+[ext_resource type="Texture2D" uid="uid://bjj3q037qmmhq" path="res://Assets/Cards/cardHeartsK.png" id="16_dkoud"]
+[ext_resource type="Texture2D" uid="uid://bd2h5ixcmr7bm" path="res://Assets/Cards/cardClubsK.png" id="17_13p4h"]
+[ext_resource type="Texture2D" uid="uid://cxeqwr1xesqvh" path="res://Assets/Cards/cardClubs10.png" id="18_yi4jt"]
+[ext_resource type="Texture2D" uid="uid://cywbw7olitbtq" path="res://Assets/Cards/cardSpades4.png" id="19_mi6g0"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_furlt"]
 load_path = "res://.godot/imported/fondoss.png-dbc39b56e58aee7914ccab1aea1568b2.ctex"
@@ -19,14 +32,24 @@ load_path = "res://.godot/imported/fondoss.png-dbc39b56e58aee7914ccab1aea1568b2.
 [sub_resource type="LabelSettings" id="LabelSettings_kcoml"]
 font_size = 32
 outline_size = 5
+shadow_size = 9
+shadow_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_o0pga"]
 font_size = 32
+font_color = Color(1, 1, 0, 1)
 outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 9
+shadow_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_furlt"]
 font_size = 32
+font_color = Color(1, 1, 0, 1)
 outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 9
+shadow_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kcoml"]
 bg_color = Color(0, 0.4587235, 0.7739032, 1)
@@ -67,12 +90,12 @@ corner_detail = 20
 [node name="Main" type="Node2D" unique_id=1743364567]
 script = ExtResource("1_opsjl")
 escena_carta = ExtResource("2_tourb")
-texturas_cartas = Array[Texture2D]([ExtResource("3_furlt"), ExtResource("4_lor7a"), ExtResource("5_qvrkf"), ExtResource("6_o5ne2")])
+texturas_cartas = Array[Texture2D]([ExtResource("5_qvrkf"), ExtResource("4_pv33b"), ExtResource("5_ncais"), ExtResource("6_ggmfd"), ExtResource("7_m1bio"), ExtResource("8_8j2aa"), ExtResource("9_iu0vo"), ExtResource("10_0t8yp"), ExtResource("11_kkfp8"), ExtResource("12_rfcd8"), ExtResource("13_l5ic0"), ExtResource("14_sa3mb"), ExtResource("15_5cj7p"), ExtResource("16_dkoud"), ExtResource("17_13p4h"), ExtResource("18_yi4jt"), ExtResource("19_mi6g0")])
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=595963586]
 
 [node name="Fondo" type="TextureRect" parent="CanvasLayer" unique_id=1474538626]
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -67.0
@@ -108,9 +131,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -148.0
-offset_top = -122.0
+offset_top = -89.0
 offset_right = 155.0
-offset_bottom = -77.0
+offset_bottom = -44.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("7_qvrkf")
@@ -123,9 +146,9 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -746.0
-offset_top = 23.0
+offset_top = 10.0
 offset_right = -532.0
-offset_bottom = 68.0
+offset_bottom = 55.0
 grow_horizontal = 0
 theme_override_fonts/font = ExtResource("8_o5ne2")
 text = "Tiempo: 00:00"
@@ -135,10 +158,10 @@ label_settings = SubResource("LabelSettings_o0pga")
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 462.0
-offset_top = -621.0
-offset_right = 839.0
-offset_bottom = -576.0
+offset_left = 445.0
+offset_top = -659.0
+offset_right = 822.0
+offset_bottom = -614.0
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("7_qvrkf")
 text = "Jugador 1= 0 - Jugador 2 = 0"
