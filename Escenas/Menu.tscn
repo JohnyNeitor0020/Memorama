@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dnme6isfs0n63" path="res://Scripts/Menu.gd" id="1_menu"]
 [ext_resource type="Texture2D" uid="uid://60hn1u3bpdee" path="res://Assets/Cards/fondoss.png" id="2_fondo"]
+[ext_resource type="AudioStream" uid="uid://cjtjhmgh87f7j" path="res://Assets/Audio/casino_menu.mp3" id="3_o2l53"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_titulo"]
 font_size = 36
@@ -129,13 +130,87 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xhjix"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o2l53"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_425bc"]
+bg_color = Color(0.050980393, 0.1882353, 0.078431375, 0.78039217)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7019608, 0.56078434, 0.18039216, 0.8509804)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j7eae"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7019608, 0.56078434, 0.18039216, 0.8509804)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2a5i7"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ahv8"]
+bg_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8shpa"]
+bg_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [node name="Menu" type="Node2D" unique_id=2096017700]
 script = ExtResource("1_menu")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=517553174]
 
 [node name="Fondo" type="TextureRect" parent="CanvasLayer" unique_id=1053564543]
-anchors_preset = -1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -64.0
@@ -326,8 +401,61 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_btn_esquina")
 theme_override_styles/focus = SubResource("StyleBoxFlat_btn_esquina")
 text = "SALIR"
 
+[node name="PanelAjustes" type="Panel" parent="CanvasLayer" unique_id=1748040561]
+visible = false
+offset_left = 422.0
+offset_top = 159.0
+offset_right = 856.0
+offset_bottom = 560.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_xhjix")
+
+[node name="Label" type="Label" parent="CanvasLayer/PanelAjustes" unique_id=122841539]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.44700003
+anchor_top = 0.286
+anchor_right = 0.44700003
+anchor_bottom = 0.286
+offset_left = -65.99802
+offset_top = -95.686005
+offset_right = 120.00198
+offset_bottom = -53.686005
+theme_override_colors/font_color = Color(0.8784314, 0.78039217, 0.41960785, 1)
+text = "Volumen de Música"
+
+[node name="Button" type="Button" parent="CanvasLayer/PanelAjustes" unique_id=2040430405]
+layout_mode = 0
+offset_left = 138.0
+offset_top = 346.0
+offset_right = 292.0
+offset_bottom = 380.0
+theme_override_colors/font_color = Color(0.8784314, 0.78039217, 0.41960785, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_o2l53")
+theme_override_styles/hover = SubResource("StyleBoxFlat_425bc")
+theme_override_styles/focus = SubResource("StyleBoxFlat_j7eae")
+text = "Aceptar"
+
+[node name="HSlider" type="HSlider" parent="CanvasLayer/PanelAjustes" unique_id=228306497]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 170.0
+offset_right = 372.0
+offset_bottom = 190.0
+theme_override_styles/slider = SubResource("StyleBoxFlat_2a5i7")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_2ahv8")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_8shpa")
+max_value = 1.0
+step = 0.1
+value = 0.5
+
+[node name="MusicaMenu" type="AudioStreamPlayer" parent="." unique_id=930333166]
+stream = ExtResource("3_o2l53")
+autoplay = true
+
 [connection signal="pressed" from="CanvasLayer/PanelDificultad/MarginDif/VBoxDif/HBoxBotones/BtnFacil" to="." method="_on_btn_facil_pressed"]
 [connection signal="pressed" from="CanvasLayer/PanelDificultad/MarginDif/VBoxDif/HBoxBotones/BtnNormal" to="." method="_on_btn_normal_pressed"]
 [connection signal="pressed" from="CanvasLayer/PanelDificultad/MarginDif/VBoxDif/HBoxBotones/BtnDificil" to="." method="_on_btn_dificil_pressed"]
 [connection signal="pressed" from="CanvasLayer/BtnJugar" to="." method="_on_btn_jugar_pressed"]
+[connection signal="pressed" from="CanvasLayer/BtnAjustes" to="." method="_on_btn_ajustes_pressed"]
 [connection signal="pressed" from="CanvasLayer/BtnSalir" to="." method="_on_btn_salir_pressed"]
+[connection signal="pressed" from="CanvasLayer/PanelAjustes/Button" to="." method="_on_btn_cerrar_ajustes_pressed"]

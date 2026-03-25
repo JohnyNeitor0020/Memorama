@@ -12,6 +12,8 @@ extends Node2D
 @onready var grid_container: GridContainer = $CanvasLayer/GridContainer
 @onready var audio_voltear: AudioStreamPlayer = $AudioVoltear
 @onready var audio_par: AudioStreamPlayer = $AudioPar
+@onready var panel_ajustes: Panel = $CanvasLayer/PanelAjustes
+@onready var slider_volumen: HSlider = $CanvasLayer/PanelAjustes/HSlider
 
 # --- ESTADO DE JUEGO ---
 var cartas_en_mesa: Array[Carta] = []
@@ -31,6 +33,10 @@ func _ready() -> void:
 
 	# 2. Evitar que se salgan de la mesa (Ajustar columnas y escala)
 	grid_container.pivot_offset = grid_container.size / 2.0
+	# Conectar ajustes de sonido
+	slider_volumen.value_changed.connect(_on_volumen_cambiado)
+	slider_volumen.value = 0.5
+	panel_ajustes.hide() # Asegurarnos de que empiece oculto
 	
 	if parejas_totales <= 8:
 		grid_container.columns = 4  # 4x4 (16 cartas)
@@ -146,3 +152,26 @@ func _fin_del_juego() -> void:
 
 func _on_boton_reiniciar_pressed() -> void:
 	get_tree().reload_current_scene()
+	
+# --- AJUSTES DE SONIDO ---
+func _on_btn_ajustes_pressed() -> void:
+	panel_ajustes.show()
+
+func _on_btn_cerrar_ajustes_pressed() -> void:
+	panel_ajustes.hide()
+
+func _on_volumen_cambiado(valor: float) -> void:
+	var bus_index := AudioServer.get_bus_index("Master")
+	if valor == 0:
+		AudioServer.set_bus_mute(bus_index, true)
+	else:
+		AudioServer.set_bus_mute(bus_index, false)
+		AudioServer.set_bus_volume_db(bus_index, linear_to_db(valor))
+
+
+func _on_button_pressed() -> void:
+	pass # Replace with function body.
+	
+func _on_btn_volver_menu_pressed() -> void:
+	# Esta línea destruye la mesa actual y vuelve a cargar tu menú principal
+	get_tree().change_scene_to_file("res://Escenas/Menu.tscn")

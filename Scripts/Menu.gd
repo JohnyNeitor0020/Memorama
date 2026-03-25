@@ -2,6 +2,12 @@ extends Node2D
 
 var dificultad_seleccionada := 8
 
+@onready var BtnJugar: Control =$CanvasLayer/BtnJugar
+@onready var fila_j1: Control = $CanvasLayer/FilaJ1
+@onready var fila_j2: Control = $CanvasLayer/FilaJ2
+@onready var panel_dificultad: Control = $CanvasLayer/PanelDificultad
+@onready var panel_ajustes: Panel = $CanvasLayer/PanelAjustes
+@onready var slider_volumen: HSlider = $CanvasLayer/PanelAjustes/HSlider
 @onready var input_j1: LineEdit = $CanvasLayer/FilaJ1/InputJ1
 @onready var input_j2: LineEdit = $CanvasLayer/FilaJ2/InputJ2
 @onready var btn_facil: Button = $CanvasLayer/PanelDificultad/MarginDif/VBoxDif/HBoxBotones/BtnFacil
@@ -14,7 +20,9 @@ var estilo_on: StyleBoxFlat
 func _ready() -> void:
 	_crear_estilos()
 	_seleccionar_dificultad(8)
-
+	slider_volumen.value_changed.connect(_on_volumen_cambiado)
+	slider_volumen.value = 0.5
+	
 func _crear_estilos() -> void:
 	estilo_off = StyleBoxFlat.new()
 	estilo_off.bg_color = Color(0.05, 0.21, 0.09, 0.95)
@@ -62,3 +70,38 @@ func _on_btn_jugar_pressed() -> void:
 
 func _on_btn_salir_pressed() -> void:
 	get_tree().quit()
+	
+# --- AJUSTES DE SONIDO ---
+
+# Abrir el panel
+func _on_btn_ajustes_pressed() -> void:
+	panel_ajustes.show()
+	# Ocultamos lo demás para que no estorbe
+	fila_j1.hide()
+	fila_j2.hide()
+	panel_dificultad.hide()
+	BtnJugar.hide()
+
+# Cerrar el panel
+func _on_btn_cerrar_ajustes_pressed() -> void:
+	panel_ajustes.hide()
+	# Volvemos a mostrar todo como estaba
+	fila_j1.show()
+	fila_j2.show()
+	panel_dificultad.show()
+	BtnJugar.show()
+
+# Ajustar el volumen maestro de todo el juego
+func _on_volumen_cambiado(valor: float) -> void:
+	# Godot usa decibelios (dB). linear_to_db convierte el 0 a 1 del slider a decibelios correctos.
+	var bus_index := AudioServer.get_bus_index("Master")
+	
+	if valor == 0:
+		AudioServer.set_bus_mute(bus_index, true)
+	else:
+		AudioServer.set_bus_mute(bus_index, false)
+		AudioServer.set_bus_volume_db(bus_index, linear_to_db(valor))
+
+
+func _on_button_pressed() -> void:
+	pass # Replace with function body.

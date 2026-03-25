@@ -25,6 +25,7 @@
 [ext_resource type="Texture2D" uid="uid://bd2h5ixcmr7bm" path="res://Assets/Cards/cardClubsK.png" id="17_13p4h"]
 [ext_resource type="Texture2D" uid="uid://cxeqwr1xesqvh" path="res://Assets/Cards/cardClubs10.png" id="18_yi4jt"]
 [ext_resource type="Texture2D" uid="uid://cywbw7olitbtq" path="res://Assets/Cards/cardSpades4.png" id="19_mi6g0"]
+[ext_resource type="AudioStream" uid="uid://b5sutspe34vrh" path="res://Assets/Audio/casino_principal.mp3" id="26_ncais"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_furlt"]
 load_path = "res://.godot/imported/fondoss.png-dbc39b56e58aee7914ccab1aea1568b2.ctex"
@@ -86,6 +87,104 @@ corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 corner_detail = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ggmfd"]
+bg_color = Color(0.05, 0.19, 0.08, 0.78)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7, 0.56, 0.18, 0.85)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ncais"]
+bg_color = Color(0.05, 0.19, 0.08, 0.78)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7, 0.56, 0.18, 0.85)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1bio"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8j2aa"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iu0vo"]
+bg_color = Color(0.050980393, 0.1882353, 0.078431375, 0.78039217)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7019608, 0.56078434, 0.18039216, 0.8509804)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0t8yp"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7019608, 0.56078434, 0.18039216, 0.8509804)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kkfp8"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rfcd8"]
+bg_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l5ic0"]
+bg_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [node name="Main" type="Node2D" unique_id=1743364567]
 script = ExtResource("1_opsjl")
@@ -186,6 +285,76 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_furlt")
 theme_override_styles/hover = SubResource("StyleBoxFlat_o0pga")
 text = " ◆JUGAR OTRA VEZ ◆"
 
+[node name="BtnAjustes" type="Button" parent="CanvasLayer" unique_id=798477119]
+offset_left = 44.0
+offset_top = 622.0
+offset_right = 154.0
+offset_bottom = 662.0
+theme_override_colors/font_color = Color(0.88, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_ggmfd")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ggmfd")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ggmfd")
+text = "AJUSTES"
+
+[node name="BtnVolverMenu" type="Button" parent="CanvasLayer" unique_id=1114560263]
+offset_left = 1126.0
+offset_top = 622.0
+offset_right = 1236.0
+offset_bottom = 662.0
+theme_override_colors/font_color = Color(0.88, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_ncais")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ncais")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ncais")
+text = "Menú"
+
+[node name="PanelAjustes" type="Panel" parent="CanvasLayer" unique_id=2113718937]
+offset_left = 422.0
+offset_top = 159.0
+offset_right = 856.0
+offset_bottom = 560.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_m1bio")
+
+[node name="Label" type="Label" parent="CanvasLayer/PanelAjustes" unique_id=1979860000]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.44700003
+anchor_top = 0.286
+anchor_right = 0.44700003
+anchor_bottom = 0.286
+offset_left = -65.99802
+offset_top = -95.686005
+offset_right = 120.00198
+offset_bottom = -53.686005
+theme_override_colors/font_color = Color(0.8784314, 0.78039217, 0.41960785, 1)
+text = "Volumen de Música"
+
+[node name="Button" type="Button" parent="CanvasLayer/PanelAjustes" unique_id=1664398966]
+layout_mode = 0
+offset_left = 138.0
+offset_top = 346.0
+offset_right = 292.0
+offset_bottom = 380.0
+theme_override_colors/font_color = Color(0.8784314, 0.78039217, 0.41960785, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_8j2aa")
+theme_override_styles/hover = SubResource("StyleBoxFlat_iu0vo")
+theme_override_styles/focus = SubResource("StyleBoxFlat_0t8yp")
+text = "Aceptar"
+
+[node name="HSlider" type="HSlider" parent="CanvasLayer/PanelAjustes" unique_id=866623195]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 170.0
+offset_right = 372.0
+offset_bottom = 190.0
+theme_override_styles/slider = SubResource("StyleBoxFlat_kkfp8")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_rfcd8")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_l5ic0")
+max_value = 1.0
+step = 0.1
+value = 0.5
+
 [node name="AudioVoltear" type="AudioStreamPlayer" parent="." unique_id=1900230775]
 stream = ExtResource("7_kcoml")
 
@@ -203,4 +372,11 @@ texto_puntos = NodePath("../CanvasLayer/TextoPuntos")
 boton_reiniciar = NodePath("../CanvasLayer/BotonReiniciar")
 grid_container = NodePath("../CanvasLayer/GridContainer")
 
+[node name="MusicaMenu" type="AudioStreamPlayer" parent="." unique_id=313464065]
+stream = ExtResource("26_ncais")
+autoplay = true
+
 [connection signal="pressed" from="CanvasLayer/BotonReiniciar" to="." method="_on_boton_reiniciar_pressed"]
+[connection signal="pressed" from="CanvasLayer/BtnAjustes" to="." method="_on_btn_ajustes_pressed"]
+[connection signal="pressed" from="CanvasLayer/BtnVolverMenu" to="." method="_on_btn_volver_menu_pressed"]
+[connection signal="pressed" from="CanvasLayer/PanelAjustes/Button" to="." method="_on_btn_cerrar_ajustes_pressed"]
