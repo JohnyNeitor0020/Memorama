@@ -24,6 +24,7 @@ var vbox_botones: VBoxContainer
 var panel_espera: Panel
 
 func _ready() -> void:
+	name = "Menu" # Forzar nombre para que el servidor y cliente coincidan en las rutas de RPC
 	_crear_estilos()
 	_crear_panel_espera() # Inicializar el modal de espera
 	_seleccionar_dificultad(8)
