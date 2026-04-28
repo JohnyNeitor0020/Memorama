@@ -83,49 +83,77 @@ func _crear_botones_multijugador() -> void:
 	vbox_botones.add_child(btn_join)
 
 func _crear_panel_espera() -> void:
+	# Contenedor principal de pantalla completa
 	panel_espera = Panel.new()
 	panel_espera.hide()
 	
-	# Estilo Glassmorphism
-	var estilo_modal = StyleBoxFlat.new()
-	estilo_modal.bg_color = Color(0.02, 0.1, 0.05, 0.9) # Verde muy oscuro traslúcido
-	estilo_modal.border_width_left = 2
-	estilo_modal.border_width_top = 2
-	estilo_modal.border_width_right = 2
-	estilo_modal.border_width_bottom = 2
-	estilo_modal.border_color = Color(0.7, 0.56, 0.18) # Dorado
-	estilo_modal.corner_radius_top_left = 15
-	estilo_modal.corner_radius_top_right = 15
-	estilo_modal.corner_radius_bottom_left = 15
-	estilo_modal.corner_radius_bottom_right = 15
-	estilo_modal.shadow_size = 20
-	estilo_modal.shadow_color = Color(0, 0, 0, 0.5)
+	# Estilo: Fondo oscuro para ocultar el menú
+	var estilo_fondo = StyleBoxFlat.new()
+	estilo_fondo.bg_color = Color(0.01, 0.08, 0.04, 1.0) # Verde casino muy sólido
+	panel_espera.add_theme_stylebox_override("panel", estilo_fondo)
+	panel_espera.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	
-	panel_espera.add_theme_stylebox_override("panel", estilo_modal)
+	# Centro del contenido
+	var center = CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	panel_espera.add_child(center)
 	
-	# Tamaño y posición (Centrado)
-	var screen_size = get_viewport_rect().size
-	panel_espera.custom_minimum_size = Vector2(400, 150)
-	panel_espera.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	var vbox = VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 30)
+	center.add_child(vbox)
 	
-	# Contenedor para el texto
-	var margin = MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_top", 20)
-	margin.add_theme_constant_override("margin_bottom", 20)
-	margin.add_theme_constant_override("margin_left", 20)
-	margin.add_theme_constant_override("margin_right", 20)
-	panel_espera.add_child(margin)
+	# Cuadro de mensaje (el que tenías pero más grande)
+	var box = Panel.new()
+	box.custom_minimum_size = Vector2(500, 250)
+	var estilo_box = StyleBoxFlat.new()
+	estilo_box.bg_color = Color(0.04, 0.15, 0.06, 1.0)
+	estilo_box.border_width_left = 3
+	estilo_box.border_width_top = 3
+	estilo_box.border_width_right = 3
+	estilo_box.border_width_bottom = 3
+	estilo_box.border_color = Color(0.7, 0.56, 0.18)
+	estilo_box.corner_radius_top_left = 20
+	estilo_box.corner_radius_top_right = 20
+	estilo_box.corner_radius_bottom_left = 20
+	estilo_box.corner_radius_bottom_right = 20
+	box.add_theme_stylebox_override("panel", estilo_box)
+	vbox.add_child(box)
 	
+	# Texto
 	var label = Label.new()
-	label.text = "Conectando al casino...\nEsperando oponente"
+	label.text = "SALA DE ESPA\nCONECTANDO AL CASINO...\nESPERANDO RIVAL"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", 22)
-	label.add_theme_color_override("font_color", Color(1, 0.9, 0.6)) # Crema/Dorado suave
-	margin.add_child(label)
+	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	label.add_theme_font_size_override("font_size", 24)
+	label.add_theme_color_override("font_color", Color(1, 0.9, 0.4))
+	box.add_child(label)
+	
+	# Botón Cancelar
+	var btn_cancelar = Button.new()
+	btn_cancelar.text = "CANCELAR Y REGRESAR"
+	btn_cancelar.custom_minimum_size = Vector2(300, 60)
+	btn_cancelar.add_theme_stylebox_override("normal", estilo_off)
+	btn_cancelar.add_theme_stylebox_override("hover", estilo_on)
+	btn_cancelar.add_theme_font_size_override("font_size", 18)
+	btn_cancelar.pressed.connect(_on_cancel_pressed)
+	vbox.add_child(btn_cancelar)
 	
 	$CanvasLayer.add_child(panel_espera)
+
+func _on_cancel_pressed() -> void:
+	# Desconectar multijugador si existe
+	if multiplayer.multiplayer_peer:
+		multiplayer.multiplayer_peer.close()
+		multiplayer.multiplayer_peer = null
+	
+	# Resetear variables
+	GameData.my_role = GameData.Role.NONE
+	
+	# Volver al menú
+	panel_espera.hide()
+	vbox_botones.show()
+	print("Conexión cancelada por el usuario")
 
 
 func _crear_estilos() -> void:
