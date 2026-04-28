@@ -1,28 +1,40 @@
-# Usamos una imagen base ligera de Ubuntu
+# Etapa 1: Descargar Godot y preparar el proyecto
 FROM ubuntu:22.04
 
-# Evitar prompts interactivos durante la instalación
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Instalamos las librerías necesarias para Godot 4
+# Instalar dependencias necesarias para Godot headless
 RUN apt-get update && apt-get install -y \
     ca-certificates \
+    wget \
+    unzip \
     libfontconfig1 \
     libxcursor1 \
     libxinerama1 \
     libxrandr2 \
     libxrender1 \
     libgl1-mesa-glx \
+    libxi6 \
+    libasound2 \
+    libpulse0 \
+    libdbus-1-3 \
     && rm -rf /var/lib/apt/lists/*
 
-# Creamos el directorio de la app
+# Descargar Godot 4.6.1 directamente desde GitHub
+RUN wget -q https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_linux.x86_64.zip \
+    && unzip Godot_v4.6.1-stable_linux.x86_64.zip \
+    && mv Godot_v4.6.1-stable_linux.x86_64 /usr/local/bin/godot \
+    && chmod +x /usr/local/bin/godot \
+    && rm Godot_v4.6.1-stable_linux.x86_64.zip
+
 WORKDIR /app
 
-# Copiamos todo el contenido de la carpeta Memorama
+# Copiamos TODO el proyecto (código fuente, escenas, assets, .import files)
 COPY . .
 
-# Damos permisos de ejecución al binario
-RUN chmod +x server.x86_64
+# Pre-importar recursos: Godot genera la carpeta .godot/imported/
+# Usamos timeout porque el editor puede quedarse abierto; --quit lo cierra al terminar
+RUN godot --headless --import || true
 
-# Comando para arrancar el servidor
-CMD ["./server.x86_64", "--headless"]
+# Comando para arrancar el servidor directamente desde el proyecto fuente
+CMD ["godot", "--headless", "--path", "/app"]

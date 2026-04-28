@@ -3,7 +3,9 @@
 /android/
 /ios/
 *.tmp
-*.png.import
-*.import
 .env
 export_presets.cfg
+
+# Binarios exportados (ya no necesarios con el nuevo Dockerfile)
+server.x86_64
+server.pck
