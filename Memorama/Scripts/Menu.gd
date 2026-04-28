@@ -21,9 +21,11 @@ var nombres_recibidos := 0
 var estilo_off: StyleBoxFlat
 var estilo_on: StyleBoxFlat
 var vbox_botones: VBoxContainer
+var panel_espera: Panel
 
 func _ready() -> void:
 	_crear_estilos()
+	_crear_panel_espera() # Inicializar el modal de espera
 	_seleccionar_dificultad(8)
 	slider_volumen.value_changed.connect(_on_volumen_cambiado)
 	slider_volumen.value = 0.5
@@ -78,6 +80,52 @@ func _crear_botones_multijugador() -> void:
 	btn_join.add_theme_font_size_override("font_size", 20)
 	btn_join.pressed.connect(_on_join_pressed)
 	vbox_botones.add_child(btn_join)
+
+func _crear_panel_espera() -> void:
+	panel_espera = Panel.new()
+	panel_espera.hide()
+	
+	# Estilo Glassmorphism
+	var estilo_modal = StyleBoxFlat.new()
+	estilo_modal.bg_color = Color(0.02, 0.1, 0.05, 0.9) # Verde muy oscuro traslúcido
+	estilo_modal.border_width_left = 2
+	estilo_modal.border_width_top = 2
+	estilo_modal.border_width_right = 2
+	estilo_modal.border_width_bottom = 2
+	estilo_modal.border_color = Color(0.7, 0.56, 0.18) # Dorado
+	estilo_modal.corner_radius_top_left = 15
+	estilo_modal.corner_radius_top_right = 15
+	estilo_modal.corner_radius_bottom_left = 15
+	estilo_modal.corner_radius_bottom_right = 15
+	estilo_modal.shadow_size = 20
+	estilo_modal.shadow_color = Color(0, 0, 0, 0.5)
+	
+	panel_espera.add_theme_stylebox_override("panel", estilo_modal)
+	
+	# Tamaño y posición (Centrado)
+	var screen_size = get_viewport_rect().size
+	panel_espera.custom_minimum_size = Vector2(400, 150)
+	panel_espera.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	
+	# Contenedor para el texto
+	var margin = MarginContainer.new()
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_bottom", 20)
+	margin.add_theme_constant_override("margin_left", 20)
+	margin.add_theme_constant_override("margin_right", 20)
+	panel_espera.add_child(margin)
+	
+	var label = Label.new()
+	label.text = "Conectando al casino...\nEsperando oponente"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 22)
+	label.add_theme_color_override("font_color", Color(1, 0.9, 0.6)) # Crema/Dorado suave
+	margin.add_child(label)
+	
+	$CanvasLayer.add_child(panel_espera)
+
 
 func _crear_estilos() -> void:
 	estilo_off = StyleBoxFlat.new()
@@ -227,6 +275,10 @@ func _on_join_pressed() -> void:
 	mi_nombre = input_j1.text.strip_edges()
 	if mi_nombre == "":
 		mi_nombre = "Jugador"
+
+	# Mostrar el cuadro de espera con diseño premium
+	panel_espera.show()
+	vbox_botones.hide()
 
 	var peer = WebSocketMultiplayerPeer.new()
 	
