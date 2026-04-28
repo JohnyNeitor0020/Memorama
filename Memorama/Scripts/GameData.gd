@@ -1,6 +1,6 @@
 extends Node
 
-enum Role { SERVER, P1, P2, NONE }
+enum Role { SERVER, P1, P2, SPECTATOR, NONE }
 
 # Datos que viajan del menú al juego
 var nombre_j1 := "Nombre"
