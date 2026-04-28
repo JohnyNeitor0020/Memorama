@@ -1,0 +1,383 @@
+[gd_scene format=3 uid="uid://ca1e8epiy20lo"]
+
+[ext_resource type="Script" uid="uid://bxeqg3edkskb2" path="res://Scripts/GameManager.gd" id="1_opsjl"]
+[ext_resource type="PackedScene" uid="uid://dinie86sbrdn3" path="res://Escenas/carta.tscn" id="2_tourb"]
+[ext_resource type="Texture2D" uid="uid://b2kbub0r5i1ff" path="res://Assets/Cards/cardClubs2.png" id="4_pv33b"]
+[ext_resource type="Texture2D" uid="uid://bncxf72aaxwf8" path="res://Assets/Cards/cardClubs3.png" id="5_ncais"]
+[ext_resource type="Texture2D" uid="uid://scto7bal4hdg" path="res://Assets/Cards/cardJoker.png" id="5_qvrkf"]
+[ext_resource type="Texture2D" uid="uid://buqqhyrbp66h5" path="res://Assets/Cards/cardClubs4.png" id="6_ggmfd"]
+[ext_resource type="AudioStream" uid="uid://c5c38bdsflls2" path="res://Assets/Audio/cardPlace1.ogg" id="7_kcoml"]
+[ext_resource type="Texture2D" uid="uid://dq8hwrr4m6plw" path="res://Assets/Cards/cardClubs5.png" id="7_m1bio"]
+[ext_resource type="FontFile" uid="uid://dborvqcqo8hy6" path="res://Assets/Playball/Playball-Regular.ttf" id="7_qvrkf"]
+[ext_resource type="Texture2D" uid="uid://cgwaj87y4x8b6" path="res://Assets/Cards/cardClubs6.png" id="8_8j2aa"]
+[ext_resource type="AudioStream" uid="uid://d7buluvsuvff" path="res://Assets/Audio/dieThrow1.ogg" id="8_kcoml"]
+[ext_resource type="FontFile" uid="uid://7ep3gqf7olg6" path="res://Assets/GFS_Didot/GFSDidot-Regular.ttf" id="8_o5ne2"]
+[ext_resource type="Script" uid="uid://d7kaq34457la" path="res://Scripts/TurnManager.gd" id="9_furlt"]
+[ext_resource type="Texture2D" uid="uid://crtwj0t1dgknj" path="res://Assets/Cards/cardClubs7.png" id="9_iu0vo"]
+[ext_resource type="Texture2D" uid="uid://3gneyw3cvkab" path="res://Assets/Cards/cardClubs8.png" id="10_0t8yp"]
+[ext_resource type="Script" uid="uid://dfnlws18cadl5" path="res://Scripts/UIManager.gd" id="10_lor7a"]
+[ext_resource type="Texture2D" uid="uid://duu2noywgjxvk" path="res://Assets/Cards/cardClubs9.png" id="11_kkfp8"]
+[ext_resource type="Texture2D" uid="uid://bwnkl15l53vlp" path="res://Assets/Cards/cardClubsA.png" id="12_rfcd8"]
+[ext_resource type="Texture2D" uid="uid://ctepbwm7aokd7" path="res://Assets/Cards/cardClubsJ.png" id="13_l5ic0"]
+[ext_resource type="Texture2D" uid="uid://ceg3718xqidm4" path="res://Assets/Cards/cardHearts5.png" id="14_sa3mb"]
+[ext_resource type="Texture2D" uid="uid://d4g688ueypsxq" path="res://Assets/Cards/cardHearts8.png" id="15_5cj7p"]
+[ext_resource type="Texture2D" uid="uid://bjj3q037qmmhq" path="res://Assets/Cards/cardHeartsK.png" id="16_dkoud"]
+[ext_resource type="Texture2D" uid="uid://bd2h5ixcmr7bm" path="res://Assets/Cards/cardClubsK.png" id="17_13p4h"]
+[ext_resource type="Texture2D" uid="uid://cxeqwr1xesqvh" path="res://Assets/Cards/cardClubs10.png" id="18_yi4jt"]
+[ext_resource type="Texture2D" uid="uid://cywbw7olitbtq" path="res://Assets/Cards/cardSpades4.png" id="19_mi6g0"]
+[ext_resource type="AudioStream" uid="uid://b5sutspe34vrh" path="res://Assets/Audio/casino_principal.mp3" id="26_ncais"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_furlt"]
+load_path = "res://.godot/imported/fondoss.png-dbc39b56e58aee7914ccab1aea1568b2.ctex"
+
+[sub_resource type="LabelSettings" id="LabelSettings_kcoml"]
+font_size = 32
+outline_size = 5
+shadow_size = 9
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_o0pga"]
+font_size = 32
+font_color = Color(1, 1, 0, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 9
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_furlt"]
+font_size = 32
+font_color = Color(1, 1, 0, 1)
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+shadow_size = 9
+shadow_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kcoml"]
+bg_color = Color(0.41960785, 0.2784314, 0.050980393, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_furlt"]
+bg_color = Color(0.41960785, 0.2784314, 0.050980393, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o0pga"]
+bg_color = Color(0.41960785, 0.2784314, 0.050980393, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ggmfd"]
+bg_color = Color(0.05, 0.19, 0.08, 0.78)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7, 0.56, 0.18, 0.85)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ncais"]
+bg_color = Color(0.05, 0.19, 0.08, 0.78)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7, 0.56, 0.18, 0.85)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1bio"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8j2aa"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iu0vo"]
+bg_color = Color(0.050980393, 0.1882353, 0.078431375, 0.78039217)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7019608, 0.56078434, 0.18039216, 0.8509804)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0t8yp"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7019608, 0.56078434, 0.18039216, 0.8509804)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kkfp8"]
+bg_color = Color(0.039215688, 0.16862746, 0.07058824, 0.9019608)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rfcd8"]
+bg_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l5ic0"]
+bg_color = Color(0.72156864, 0.5803922, 0.2, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="Main" type="Node2D" unique_id=1743364567]
+script = ExtResource("1_opsjl")
+escena_carta = ExtResource("2_tourb")
+texturas_cartas = Array[Texture2D]([ExtResource("5_qvrkf"), ExtResource("4_pv33b"), ExtResource("5_ncais"), ExtResource("6_ggmfd"), ExtResource("7_m1bio"), ExtResource("8_8j2aa"), ExtResource("9_iu0vo"), ExtResource("10_0t8yp"), ExtResource("11_kkfp8"), ExtResource("12_rfcd8"), ExtResource("13_l5ic0"), ExtResource("14_sa3mb"), ExtResource("15_5cj7p"), ExtResource("16_dkoud"), ExtResource("17_13p4h"), ExtResource("18_yi4jt"), ExtResource("19_mi6g0")])
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=595963586]
+
+[node name="Fondo" type="TextureRect" parent="CanvasLayer" unique_id=1474538626]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -67.0
+offset_top = -67.0
+offset_right = 65.0
+offset_bottom = 69.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("CompressedTexture2D_furlt")
+expand_mode = 1
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer" unique_id=507455795]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -268.0
+offset_top = -190.0
+offset_right = 268.0
+offset_bottom = 190.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.55, 0.55)
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 4
+
+[node name="TextoEstado" type="Label" parent="CanvasLayer" unique_id=2099620201]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -148.0
+offset_top = -89.0
+offset_right = 155.0
+offset_bottom = -44.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("7_qvrkf")
+text = "Turno del Jugador 1"
+label_settings = SubResource("LabelSettings_kcoml")
+horizontal_alignment = 1
+
+[node name="TextoTiempo" type="Label" parent="CanvasLayer" unique_id=171931916]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -746.0
+offset_top = 10.0
+offset_right = -532.0
+offset_bottom = 55.0
+grow_horizontal = 0
+theme_override_fonts/font = ExtResource("8_o5ne2")
+text = "Tiempo: 00:00"
+label_settings = SubResource("LabelSettings_o0pga")
+
+[node name="TextoPuntos" type="Label" parent="CanvasLayer" unique_id=969256589]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 445.0
+offset_top = -659.0
+offset_right = 822.0
+offset_bottom = -614.0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("7_qvrkf")
+text = "Jugador 1= 0 - Jugador 2 = 0"
+label_settings = SubResource("LabelSettings_furlt")
+
+[node name="BotonReiniciar" type="Button" parent="CanvasLayer" unique_id=1545377846]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -195.0
+offset_top = -54.0
+offset_right = 189.0
+offset_bottom = 47.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_kcoml")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_furlt")
+theme_override_styles/hover = SubResource("StyleBoxFlat_o0pga")
+text = " ◆JUGAR OTRA VEZ ◆"
+
+[node name="BtnAjustes" type="Button" parent="CanvasLayer" unique_id=798477119]
+offset_left = 44.0
+offset_top = 622.0
+offset_right = 154.0
+offset_bottom = 662.0
+theme_override_colors/font_color = Color(0.88, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_ggmfd")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ggmfd")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ggmfd")
+text = "AJUSTES"
+
+[node name="BtnVolverMenu" type="Button" parent="CanvasLayer" unique_id=1114560263]
+offset_left = 1126.0
+offset_top = 622.0
+offset_right = 1236.0
+offset_bottom = 662.0
+theme_override_colors/font_color = Color(0.88, 0.78, 0.42, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_ncais")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ncais")
+theme_override_styles/focus = SubResource("StyleBoxFlat_ncais")
+text = "Menú"
+
+[node name="PanelAjustes" type="Panel" parent="CanvasLayer" unique_id=2113718937]
+offset_left = 422.0
+offset_top = 159.0
+offset_right = 856.0
+offset_bottom = 560.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_m1bio")
+
+[node name="Label" type="Label" parent="CanvasLayer/PanelAjustes" unique_id=1979860000]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.44700003
+anchor_top = 0.286
+anchor_right = 0.44700003
+anchor_bottom = 0.286
+offset_left = -65.99802
+offset_top = -95.686005
+offset_right = 120.00198
+offset_bottom = -53.686005
+theme_override_colors/font_color = Color(0.8784314, 0.78039217, 0.41960785, 1)
+text = "Volumen de Música"
+
+[node name="Button" type="Button" parent="CanvasLayer/PanelAjustes" unique_id=1664398966]
+layout_mode = 0
+offset_left = 138.0
+offset_top = 346.0
+offset_right = 292.0
+offset_bottom = 380.0
+theme_override_colors/font_color = Color(0.8784314, 0.78039217, 0.41960785, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_8j2aa")
+theme_override_styles/hover = SubResource("StyleBoxFlat_iu0vo")
+theme_override_styles/focus = SubResource("StyleBoxFlat_0t8yp")
+text = "Aceptar"
+
+[node name="HSlider" type="HSlider" parent="CanvasLayer/PanelAjustes" unique_id=866623195]
+layout_mode = 0
+offset_left = 48.0
+offset_top = 170.0
+offset_right = 372.0
+offset_bottom = 190.0
+theme_override_styles/slider = SubResource("StyleBoxFlat_kkfp8")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_rfcd8")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_l5ic0")
+max_value = 1.0
+step = 0.1
+value = 0.5
+
+[node name="AudioVoltear" type="AudioStreamPlayer" parent="." unique_id=1900230775]
+stream = ExtResource("7_kcoml")
+
+[node name="AudioPar" type="AudioStreamPlayer" parent="." unique_id=1950521347]
+stream = ExtResource("8_kcoml")
+
+[node name="TurnManager" type="Node" parent="." unique_id=243297346]
+script = ExtResource("9_furlt")
+
+[node name="UIManager" type="Node" parent="." unique_id=500988790 node_paths=PackedStringArray("texto_estado", "texto_tiempo", "texto_puntos", "boton_reiniciar", "boton_salir", "grid_container")]
+script = ExtResource("10_lor7a")
+texto_estado = NodePath("../CanvasLayer/TextoEstado")
+texto_tiempo = NodePath("../CanvasLayer/TextoTiempo")
+texto_puntos = NodePath("../CanvasLayer/TextoPuntos")
+boton_reiniciar = NodePath("../CanvasLayer/BotonReiniciar")
+boton_salir = NodePath("../CanvasLayer/BtnVolverMenu")
+grid_container = NodePath("../CanvasLayer/GridContainer")
+
+[node name="MusicaMenu" type="AudioStreamPlayer" parent="." unique_id=313464065]
+stream = ExtResource("26_ncais")
+autoplay = true
+
+[connection signal="pressed" from="CanvasLayer/BotonReiniciar" to="." method="_on_boton_reiniciar_pressed"]
+[connection signal="pressed" from="CanvasLayer/BtnAjustes" to="." method="_on_btn_ajustes_pressed"]
+[connection signal="pressed" from="CanvasLayer/BtnVolverMenu" to="." method="_on_btn_volver_menu_pressed"]
+[connection signal="pressed" from="CanvasLayer/PanelAjustes/Button" to="." method="_on_btn_cerrar_ajustes_pressed"]

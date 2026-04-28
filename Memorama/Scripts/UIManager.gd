@@ -1,0 +1,95 @@
+extends Node
+
+class_name UIManager
+
+# --- REFERENCIAS (conéctalas desde Juego.tscn) ---
+@export var texto_estado: Label
+@export var texto_tiempo: Label
+@export var texto_puntos: Label
+@export var boton_reiniciar: Button
+@export var boton_salir: Button
+@export var grid_container: GridContainer
+
+# Colores de jugadores
+#const COLOR_J1 := Color(0.2, 0.6, 1.0)
+#const COLOR_J2 := Color(1.0, 0.8, 0.2)
+const COLOR_J1 := Color(0.90, 0.90, 0.90) # Plata / Blanco elegante
+const COLOR_J2 := Color(0.96, 0.84, 0.30)
+# ── TURNO ──
+func mostrar_turno(jugador: int) -> void:
+	var mi_jugador_id = 1 if GameData.is_host else 2
+	if jugador == mi_jugador_id:
+		texto_estado.text = "¡Tu turno!"
+	else:
+		texto_estado.text = "Turno del oponente"
+		
+	texto_estado.modulate = COLOR_J1 if jugador == 1 else COLOR_J2
+	_rotar_tablero(jugador)
+
+func _rotar_tablero(jugador: int) -> void:
+	await get_tree().process_frame
+	grid_container.pivot_offset = grid_container.size / 2.0
+	var angulo_destino := 0.0 if jugador == 1 else PI
+	var tween := grid_container.create_tween()
+	tween.tween_property(grid_container, "rotation", angulo_destino, 0.5)\
+		.set_ease(Tween.EASE_IN_OUT)\
+		.set_trans(Tween.TRANS_CUBIC)
+
+# ── MENSAJES DE ESTADO ──
+func mostrar_par_encontrado(jugador: int) -> void:
+	var mi_jugador_id = 1 if GameData.is_host else 2
+	if jugador == mi_jugador_id:
+		texto_estado.text = "¡Punto para ti!"
+	else:
+		texto_estado.text = "Punto para el oponente"
+		
+	texto_estado.modulate = COLOR_J1 if jugador == 1 else COLOR_J2
+
+func mostrar_fallo() -> void:
+	texto_estado.text = "No coinciden..."
+	texto_estado.modulate = Color.RED
+
+func mostrar_tira_otra_vez() -> void:
+	texto_estado.text = "¡Tira otra vez!"
+
+# ── MARCADORES ──
+func actualizar_puntos(puntos_j1: int, puntos_j2: int, turnos: int) -> void:
+	texto_puntos.text = "%s: %d  |  %s: %d  (Turnos: %d)" % [
+		GameData.nombre_j1, puntos_j1,
+		GameData.nombre_j2, puntos_j2,
+		turnos
+	]
+
+func actualizar_nombres(nombre_j1: String, nombre_j2: String) -> void:
+	texto_puntos.text = "%s: 0  |  %s: 0" % [nombre_j1, nombre_j2]
+
+# ── TIEMPO ──
+func actualizar_tiempo(segundos: float) -> void:
+	var mins := int(segundos / 60)
+	var segs := int(segundos) % 60
+	texto_tiempo.text = "Tiempo: %02d:%02d" % [mins, segs]
+
+# ── FIN DEL JUEGO ──
+func mostrar_fin(puntos_j1: int, puntos_j2: int) -> void:
+	texto_tiempo.modulate = Color.YELLOW
+	var mi_jugador_id = 1 if GameData.is_host else 2
+	
+	if puntos_j1 > puntos_j2:
+		texto_estado.text = "¡GANASTE!" if mi_jugador_id == 1 else ("Ganó %s" % GameData.nombre_j1)
+		texto_estado.modulate = COLOR_J1
+	elif puntos_j2 > puntos_j1:
+		texto_estado.text = "¡GANASTE!" if mi_jugador_id == 2 else ("Ganó %s" % GameData.nombre_j2)
+		texto_estado.modulate = COLOR_J2
+	else:
+		texto_estado.text = "¡EMPATE!"
+		texto_estado.modulate = Color.WHITE
+	
+	boton_reiniciar.text = "REVANCHA"
+	boton_reiniciar.disabled = false
+	boton_reiniciar.show()
+	boton_salir.show()
+
+func mostrar_esperando_oponente() -> void:
+	texto_estado.text = "Esperando al oponente..."
+	texto_estado.modulate = Color.WHITE
+	boton_reiniciar.disabled = true
