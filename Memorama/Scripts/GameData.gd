@@ -11,8 +11,8 @@ var parejas := 8  # 8 = fácil, 12 = normal, 16 = difícil
 var server_port: int = 10000
 var server_bind_ip: String = "*"
 var client_connect_ip: String = "127.0.0.1"
-var server_url: String = ""  # URL de Render (ej: memorama-xvwq.onrender.com)
-var connection_mode: String = "local"  # "local" o "remote"
+var server_url: String = "memorama-xvwq.onrender.com"  # URL de Render por defecto
+var connection_mode: String = "remote"  # Por defecto conectar a la nube
 
 # Variables de red multijugador
 var my_role: Role = Role.NONE
