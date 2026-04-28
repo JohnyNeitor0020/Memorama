@@ -11,6 +11,8 @@ var parejas := 8  # 8 = fácil, 12 = normal, 16 = difícil
 var server_port: int = 10000
 var server_bind_ip: String = "*"
 var client_connect_ip: String = "127.0.0.1"
+var server_url: String = ""  # URL de Render (ej: memorama-xvwq.onrender.com)
+var connection_mode: String = "local"  # "local" o "remote"
 
 # Variables de red multijugador
 var my_role: Role = Role.NONE
@@ -27,6 +29,10 @@ func _ready() -> void:
 		server_bind_ip = OS.get_environment("DEFAULT_IP")
 	if OS.has_environment("CLIENT_IP"):
 		client_connect_ip = OS.get_environment("CLIENT_IP")
+	if OS.has_environment("SERVER_URL"):
+		server_url = OS.get_environment("SERVER_URL")
+	if OS.has_environment("MODE"):
+		connection_mode = OS.get_environment("MODE")
 
 func _cargar_env_local() -> void:
 	# En producción (ej. Docker/Render), las variables ya estarán en el OS.

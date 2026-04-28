@@ -57,16 +57,16 @@ func _crear_botones_multijugador() -> void:
 	vbox_botones.add_theme_constant_override("separation", 15)
 	$CanvasLayer.add_child(vbox_botones)
 	
-	# 3. Crear Botón Host
-	var btn_host = Button.new()
-	btn_host.text = "Crear Partida"
-	btn_host.custom_minimum_size = Vector2(250, 50)
-	# Reutilizamos tus estilos del casino
-	btn_host.add_theme_stylebox_override("normal", estilo_off)
-	btn_host.add_theme_stylebox_override("hover", estilo_on)
-	btn_host.add_theme_font_size_override("font_size", 20)
-	btn_host.pressed.connect(_on_host_pressed)
-	vbox_botones.add_child(btn_host)
+	# 3. Crear Botón Host (solo en modo local, en remoto el servidor ya está en Render)
+	if GameData.connection_mode != "remote":
+		var btn_host = Button.new()
+		btn_host.text = "Crear Partida"
+		btn_host.custom_minimum_size = Vector2(250, 50)
+		btn_host.add_theme_stylebox_override("normal", estilo_off)
+		btn_host.add_theme_stylebox_override("hover", estilo_on)
+		btn_host.add_theme_font_size_override("font_size", 20)
+		btn_host.pressed.connect(_on_host_pressed)
+		vbox_botones.add_child(btn_host)
 	
 	# 4. Crear Botón Join
 	var btn_join = Button.new()
@@ -230,8 +230,16 @@ func _on_join_pressed() -> void:
 
 	var peer = WebSocketMultiplayerPeer.new()
 	
-	# El cliente usa la IP configurada (por defecto 127.0.0.1)
-	var url = "ws://" + GameData.client_connect_ip + ":" + str(GameData.server_port)
+	# Construir la URL de conexión según el modo configurado en .env
+	var url: String
+	if GameData.connection_mode == "remote" and GameData.server_url != "":
+		# Conexión a servidor remoto (Render) — usa wss:// (WebSocket seguro)
+		url = "wss://" + GameData.server_url
+	else:
+		# Conexión local para pruebas
+		url = "ws://" + GameData.client_connect_ip + ":" + str(GameData.server_port)
+	
+	print("Conectando a: ", url)
 	var error = peer.create_client(url)
 	if error != OK:
 		print("Error al unirse al servidor: ", error)
