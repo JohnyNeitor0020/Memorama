@@ -5,4 +5,5 @@
 *.tmp
 *.png.import
 *.import
+.env
 export_presets.cfg

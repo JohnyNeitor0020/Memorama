@@ -1,7 +1,6 @@
 extends Node2D
 
-const PORT = 10000
-const DEFAULT_IP = "127.0.0.1"
+# Las variables de red ahora vienen de GameData (que lee de .env)
 
 var dificultad_seleccionada := 8
 var mi_nombre := ""
@@ -144,15 +143,9 @@ func _on_host_pressed() -> void:
 	GameData.nombre_j1 = mi_nombre
 	GameData.parejas = dificultad_seleccionada
 
-	var port_to_use = PORT # Puerto local por defecto (8910)
-	
-	# Si el juego detecta que está corriendo en un servidor (ej. Render), usa el puerto que le asignen
-	if OS.has_environment("PORT"):
-		port_to_use = OS.get_environment("PORT").to_int()
-
 	var peer = WebSocketMultiplayerPeer.new()
-	# create_server en WebSocket recibe el puerto dinámico y un bind_address opcional (por defecto "*")
-	var error = peer.create_server(port_to_use) 
+	# Al crear el servidor, usamos el puerto y la IP de escucha desde GameData
+	var error = peer.create_server(GameData.server_port, GameData.server_bind_ip) 
 	if error != OK:
 		print("Error al crear el servidor: ", error)
 		return
@@ -231,8 +224,9 @@ func _on_join_pressed() -> void:
 		mi_nombre = "Cliente"
 
 	var peer = WebSocketMultiplayerPeer.new()
-	var url = "ws://" + DEFAULT_IP + ":" + str(PORT)
-	# create_client en WebSocket requiere la URL completa
+	
+	# El cliente usa la IP configurada (por defecto 127.0.0.1)
+	var url = "ws://" + GameData.client_connect_ip + ":" + str(GameData.server_port)
 	var error = peer.create_client(url)
 	if error != OK:
 		print("Error al unirse al servidor: ", error)
