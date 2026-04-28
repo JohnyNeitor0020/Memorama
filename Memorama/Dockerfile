@@ -20,21 +20,20 @@ RUN apt-get update && apt-get install -y \
     libdbus-1-3 \
     && rm -rf /var/lib/apt/lists/*
 
-# Descargar Godot 4.6.1 directamente desde GitHub
-RUN wget -q https://github.com/godotengine/godot/releases/download/4.6.1-stable/Godot_v4.6.1-stable_linux.x86_64.zip \
-    && unzip Godot_v4.6.1-stable_linux.x86_64.zip \
-    && mv Godot_v4.6.1-stable_linux.x86_64 /usr/local/bin/godot \
+# Descargar Godot 4.3 estable (Versión oficial)
+RUN wget -q https://github.com/godotengine/godot/releases/download/4.3-stable/Godot_v4.3-stable_linux.x86_64.zip \
+    && unzip Godot_v4.3-stable_linux.x86_64.zip \
+    && mv Godot_v4.3-stable_linux.x86_64 /usr/local/bin/godot \
     && chmod +x /usr/local/bin/godot \
-    && rm Godot_v4.6.1-stable_linux.x86_64.zip
+    && rm Godot_v4.3-stable_linux.x86_64.zip
 
 WORKDIR /app
 
-# Copiamos TODO el proyecto (código fuente, escenas, assets, .import files)
+# Copiamos todo el proyecto
 COPY . .
 
-# Pre-importar recursos: Godot genera la carpeta .godot/imported/
-# Usamos timeout porque el editor puede quedarse abierto; --quit lo cierra al terminar
+# Pre-importar recursos
 RUN godot --headless --import || true
 
-# Comando para arrancar el servidor directamente desde el proyecto fuente
+# Comando para arrancar el servidor
 CMD ["godot", "--headless", "--path", "/app"]
