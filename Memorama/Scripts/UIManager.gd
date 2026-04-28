@@ -17,7 +17,8 @@ const COLOR_J1 := Color(0.90, 0.90, 0.90) # Plata / Blanco elegante
 const COLOR_J2 := Color(0.96, 0.84, 0.30)
 # ── TURNO ──
 func mostrar_turno(jugador: int) -> void:
-	var mi_jugador_id = 1 if GameData.is_host else 2
+	# GameData.Role.P1 vale 1, P2 vale 2.
+	var mi_jugador_id = int(GameData.my_role)
 	if jugador == mi_jugador_id:
 		texto_estado.text = "¡Tu turno!"
 	else:
@@ -37,7 +38,7 @@ func _rotar_tablero(jugador: int) -> void:
 
 # ── MENSAJES DE ESTADO ──
 func mostrar_par_encontrado(jugador: int) -> void:
-	var mi_jugador_id = 1 if GameData.is_host else 2
+	var mi_jugador_id = int(GameData.my_role)
 	if jugador == mi_jugador_id:
 		texto_estado.text = "¡Punto para ti!"
 	else:
@@ -72,7 +73,7 @@ func actualizar_tiempo(segundos: float) -> void:
 # ── FIN DEL JUEGO ──
 func mostrar_fin(puntos_j1: int, puntos_j2: int) -> void:
 	texto_tiempo.modulate = Color.YELLOW
-	var mi_jugador_id = 1 if GameData.is_host else 2
+	var mi_jugador_id = int(GameData.my_role)
 	
 	if puntos_j1 > puntos_j2:
 		texto_estado.text = "¡GANASTE!" if mi_jugador_id == 1 else ("Ganó %s" % GameData.nombre_j1)

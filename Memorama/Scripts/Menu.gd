@@ -4,6 +4,7 @@ extends Node2D
 
 var dificultad_seleccionada := 8
 var mi_nombre := ""
+var nombres_recibidos := 0
 
 @onready var BtnJugar: Control =$CanvasLayer/BtnJugar
 @onready var fila_j1: Control = $CanvasLayer/FilaJ1
@@ -36,6 +37,13 @@ func _ready() -> void:
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	
 	_crear_botones_multijugador()
+	
+	# AUTO-HOST PARA SERVIDORES (Render)
+	# Si detectamos que el juego corre sin interfaz gráfica (modo headless), 
+	# simulamos el clic en "Crear Partida" inmediatamente para abrir el puerto.
+	if DisplayServer.get_name() == "headless":
+		print("Modo servidor (headless) detectado. Auto-hosteando...")
+		call_deferred("_on_host_pressed")
 
 func _crear_botones_multijugador() -> void:
 	# 1. Ocultar el botón original
@@ -137,10 +145,7 @@ func _on_button_pressed() -> void:
 
 # --- RED MULTIJUGADOR ---
 func _on_host_pressed() -> void:
-	mi_nombre = input_j1.text.strip_edges()
-	if mi_nombre == "":
-		mi_nombre = "Host"
-	GameData.nombre_j1 = mi_nombre
+	# El host dedicado no juega, así que no necesita leer su nombre.
 	GameData.parejas = dificultad_seleccionada
 
 	var peer = WebSocketMultiplayerPeer.new()
@@ -151,9 +156,9 @@ func _on_host_pressed() -> void:
 		return
 	
 	multiplayer.multiplayer_peer = peer
-	GameData.is_host = true
+	GameData.my_role = GameData.Role.SERVER
 	GameData.peer_id = 1
-	GameData.players = [1]
+	nombres_recibidos = 0
 	_mostrar_esperando_oponente()
 
 func _mostrar_esperando_oponente() -> void:
@@ -221,7 +226,7 @@ func _mostrar_esperando_oponente() -> void:
 func _on_join_pressed() -> void:
 	mi_nombre = input_j1.text.strip_edges()
 	if mi_nombre == "":
-		mi_nombre = "Cliente"
+		mi_nombre = "Jugador"
 
 	var peer = WebSocketMultiplayerPeer.new()
 	
@@ -233,32 +238,58 @@ func _on_join_pressed() -> void:
 		return
 		
 	multiplayer.multiplayer_peer = peer
-	GameData.is_host = false
+	GameData.my_role = GameData.Role.NONE # Esperamos a que el servidor nos asigne un rol
 	print("Conectando al servidor...")
 
 func _on_peer_connected(id: int) -> void:
 	print("Jugador conectado con ID: ", id)
-	if GameData.is_host:
-		GameData.players.append(id)
-		# Esperamos a que el cliente mande su nombre
+	if GameData.my_role == GameData.Role.SERVER:
+		# Servidor asigna los IDs
+		if GameData.p1_peer_id == 0:
+			GameData.p1_peer_id = id
+			print("Cliente asignado como J1: ", id)
+		elif GameData.p2_peer_id == 0:
+			GameData.p2_peer_id = id
+			print("Cliente asignado como J2: ", id)
 
 func _on_connected_to_server() -> void:
 	print("Conectado exitosamente al servidor!")
 	GameData.peer_id = multiplayer.get_unique_id()
-	# Mandamos nuestro nombre al host
+	# Mandamos nuestro nombre al servidor dedicado
 	rpc_id(1, "register_client_name", mi_nombre)
 
 @rpc("any_peer", "call_remote", "reliable")
 func register_client_name(client_name: String) -> void:
-	if GameData.is_host:
-		GameData.nombre_j2 = client_name
-		# Ahora que tenemos ambos nombres, iniciamos el juego para ambos
-		rpc("start_game", GameData.parejas, GameData.nombre_j1, GameData.nombre_j2)
+	if GameData.my_role == GameData.Role.SERVER:
+		var sender_id = multiplayer.get_remote_sender_id()
+		
+		if sender_id == GameData.p1_peer_id:
+			GameData.nombre_j1 = client_name
+			nombres_recibidos += 1
+		elif sender_id == GameData.p2_peer_id:
+			GameData.nombre_j2 = client_name
+			nombres_recibidos += 1
+		
+		# Si ya recibimos ambos nombres, iniciamos el juego
+		if nombres_recibidos >= 2:
+			rpc("start_game_dedicated", GameData.parejas, GameData.nombre_j1, GameData.nombre_j2, GameData.p1_peer_id, GameData.p2_peer_id)
 
 
-@rpc("any_peer", "call_local", "reliable")
-func start_game(parejas: int, nombre_j1: String, nombre_j2: String) -> void:
+@rpc("authority", "call_local", "reliable")
+func start_game_dedicated(parejas: int, n1: String, n2: String, p1_id: int, p2_id: int) -> void:
 	GameData.parejas = parejas
-	GameData.nombre_j1 = nombre_j1
-	GameData.nombre_j2 = nombre_j2
+	GameData.nombre_j1 = n1
+	GameData.nombre_j2 = n2
+	GameData.p1_peer_id = p1_id
+	GameData.p2_peer_id = p2_id
+	
+	if GameData.my_role != GameData.Role.SERVER:
+		var my_id = multiplayer.get_unique_id()
+		if my_id == p1_id:
+			GameData.my_role = GameData.Role.P1
+		elif my_id == p2_id:
+			GameData.my_role = GameData.Role.P2
+		else:
+			GameData.my_role = GameData.Role.SPECTATOR
+			
 	get_tree().change_scene_to_file("res://Escenas/Juego.tscn")

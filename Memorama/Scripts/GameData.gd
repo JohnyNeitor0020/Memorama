@@ -1,5 +1,7 @@
 extends Node
 
+enum Role { SERVER, P1, P2, NONE }
+
 # Datos que viajan del menú al juego
 var nombre_j1 := "Nombre"
 var nombre_j2 := "Jugador 2"
@@ -11,9 +13,10 @@ var server_bind_ip: String = "*"
 var client_connect_ip: String = "127.0.0.1"
 
 # Variables de red multijugador
-var is_host: bool = false
+var my_role: Role = Role.NONE
 var peer_id: int = 1
-var players: Array = []
+var p1_peer_id: int = 0
+var p2_peer_id: int = 0
 
 func _ready() -> void:
 	_cargar_env_local()

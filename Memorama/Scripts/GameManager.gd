@@ -54,8 +54,9 @@ func _ready() -> void:
 	ui_manager.actualizar_puntos(0, 0, 0)
 	ui_manager.actualizar_nombres(GameData.nombre_j1, GameData.nombre_j2)
 	
-	if GameData.is_host:
+	if GameData.my_role == GameData.Role.SERVER:
 		turn_manager.iniciar()
+		# El servidor no tiene UI, pero sí controla el flujo
 		ui_manager.mostrar_turno(turn_manager.obtener_turno())
 		# El host avisa de inmediato a los clientes de quién es el primer turno
 		rpc("sync_turn", turn_manager.obtener_turno(), 0, 0, 0)
@@ -74,7 +75,7 @@ func _process(delta: float) -> void:
 
 # ── TABLERO ──
 func generar_tablero() -> void:
-	if not GameData.is_host:
+	if GameData.my_role != GameData.Role.SERVER:
 		return # El cliente espera el tablero del servidor
 		
 	var num_texturas = texturas_cartas.size()
@@ -137,11 +138,11 @@ func _on_carta_tocada(carta: Carta) -> void:
 
 @rpc("any_peer", "call_local", "reliable")
 func request_flip_card(card_index: int, requester_id: int) -> void:
-	if not GameData.is_host:
+	if GameData.my_role != GameData.Role.SERVER:
 		return
 		
-	# Mapeamos: El Host es el ID 1 (Turno 1), el Cliente es Turno 2
-	var turno_esperado = 1 if requester_id == 1 else 2
+	# Mapeamos: P1 es Turno 1, P2 es Turno 2
+	var turno_esperado = 1 if requester_id == GameData.p1_peer_id else 2
 	if turn_manager.obtener_turno() != turno_esperado:
 		return
 		
@@ -207,10 +208,14 @@ func _animar_par_exito(idx1: int, idx2: int) -> void:
 	cartas_en_mesa[idx1].resaltar_par()
 	cartas_en_mesa[idx2].resaltar_par()
 	
-	if GameData.is_host:
+	if GameData.my_role == GameData.Role.SERVER:
 		cartas_seleccionadas.clear()
 		if parejas_encontradas < parejas_totales:
-			ui_manager.mostrar_tira_otra_vez()
+			rpc("sync_mostrar_tira_otra_vez")
+
+@rpc("authority", "call_local", "reliable")
+func sync_mostrar_tira_otra_vez() -> void:
+	ui_manager.mostrar_tira_otra_vez()
 
 @rpc("authority", "call_local", "reliable")
 func sync_match_fail(idx1: int, idx2: int) -> void:
@@ -222,13 +227,13 @@ func _animar_par_fallo(idx1: int, idx2: int) -> void:
 	cartas_en_mesa[idx1].ocultar_carta()
 	cartas_en_mesa[idx2].ocultar_carta()
 	
-	if GameData.is_host:
+	if GameData.my_role == GameData.Role.SERVER:
 		cartas_seleccionadas.clear()
 		turn_manager.cambiar_turno()
 
 # ── TURNO ──
 func _on_turno_cambiado(jugador: int) -> void:
-	if GameData.is_host:
+	if GameData.my_role == GameData.Role.SERVER:
 		rpc("sync_turn", jugador, puntos_j1, puntos_j2, contador_turnos)
 
 @rpc("authority", "call_local", "reliable")
@@ -248,14 +253,16 @@ func sync_fin_del_juego() -> void:
 func _on_boton_reiniciar_pressed() -> void:
 	# El botón ahora dice "REVANCHA"
 	ui_manager.mostrar_esperando_oponente()
-	rpc("solicitar_revancha")
+	rpc_id(1, "votar_revancha")
 
-@rpc("any_peer", "call_local", "reliable")
-func solicitar_revancha() -> void:
-	rematch_votos += 1
-	# Si hay 2 votos, se reinicia la partida
-	if rematch_votos >= 2:
-		if GameData.is_host:
+@rpc("any_peer", "call_remote", "reliable")
+func votar_revancha() -> void:
+	if GameData.my_role == GameData.Role.SERVER:
+		var sender = multiplayer.get_remote_sender_id()
+		# Opcional: Validar que el remitente es un cliente válido, pero para simplificar solo sumamos
+		rematch_votos += 1
+		# Si hay 2 votos, se reinicia la partida
+		if rematch_votos >= 2:
 			rpc("sync_reiniciar")
 
 @rpc("authority", "call_local", "reliable")
@@ -289,10 +296,10 @@ func _reiniciar_partida_local() -> void:
 			carta.queue_free()
 	cartas_en_mesa.clear()
 	
-	# Si soy el Host, genero el nuevo tablero y reseteo el TurnManager
-	if GameData.is_host:
+	# Si soy el Servidor Dedicado, genero el nuevo tablero y reseteo el TurnManager
+	if GameData.my_role == GameData.Role.SERVER:
 		turn_manager.iniciar()
-		ui_manager.mostrar_turno(turn_manager.obtener_turno())
+		# El servidor avisa del nuevo turno a todos
 		rpc("sync_turn", turn_manager.obtener_turno(), 0, 0, 0)
 		generar_tablero()
 	
