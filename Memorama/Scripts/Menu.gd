@@ -1,6 +1,6 @@
 extends Node2D
 
-const PORT = 8910
+const PORT = 10000
 const DEFAULT_IP = "127.0.0.1"
 
 var dificultad_seleccionada := 8
