@@ -106,9 +106,12 @@ func request_initial_sync() -> void:
 
 @rpc("authority", "call_local", "reliable")
 func sync_board(server_deck: Array) -> void:
-	# LIMPIEZA TOTAL: Borramos CUALQUIER nodo hijo en el contenedor para evitar cartas duplicadas o huérfanas
+	# LIMPIEZA TOTAL: Borramos CUALQUIER nodo hijo en el contenedor de forma INMEDIATA
 	for child in grid_container.get_children():
+		grid_container.remove_child(child)
 		child.queue_free()
+	
+	cartas_en_mesa.clear()
 	
 	# Ajustamos las columnas según el tamaño real del mazo, pero limitado a 16 pares
 	var n_pares_recibidos = server_deck.size() / 2
@@ -116,10 +119,10 @@ func sync_board(server_deck: Array) -> void:
 	
 	_ajustar_columnas(parejas_totales)
 
-	# Si el mazo es mayor a 32, lo truncamos para no romper la UI
-	var mazo_final = server_deck
+	# Si el mazo es mayor a 32, lo truncamos brutalmente para no romper la UI
+	var mazo_final = server_deck.duplicate()
 	if mazo_final.size() > 32:
-		mazo_final = server_deck.slice(0, 32)
+		mazo_final.resize(32)
 		print("ADVERTENCIA: El servidor mandó demasiadas cartas. Truncando a 32.")
 
 	# CARGA OPTIMIZADA PARA MÓVILES:
