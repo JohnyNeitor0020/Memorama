@@ -5,7 +5,6 @@ extends Node2D
 var dificultad_seleccionada := 8
 var mi_nombre := ""
 var nombres_recibidos := 0
-const PORT = 10000
 
 @onready var BtnJugar: Control =$CanvasLayer/BtnJugar
 @onready var fila_j1: Control = $CanvasLayer/FilaJ1
@@ -230,7 +229,8 @@ func _on_host_pressed() -> void:
 	GameData.parejas = dificultad_seleccionada
 
 	var peer = WebSocketMultiplayerPeer.new()
-	var error = peer.create_server(PORT) 
+	# Usamos GameData.server_port porque ya lee automáticamente la variable PORT de Render
+	var error = peer.create_server(GameData.server_port) 
 	if error != OK:
 		print("Error al crear el servidor: ", error)
 		return
@@ -314,8 +314,8 @@ func _on_join_pressed() -> void:
 
 	var peer = WebSocketMultiplayerPeer.new()
 	
-	# Conexión directa a la URL segura para evitar el bloqueo de iOS y problemas de Mixed Content
-	var url = "wss://memorapoker0020.onrender.com"
+	# Usamos la URL de GameData (que viene del .env) asegurando el protocolo wss:// para iOS
+	var url = "wss://" + GameData.server_url
 	
 	print("Conectando a: ", url)
 	var error = peer.create_client(url)
