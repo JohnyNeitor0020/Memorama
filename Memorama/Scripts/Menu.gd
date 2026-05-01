@@ -343,8 +343,8 @@ func register_client_name(client_name: String, dificultad: int) -> void:
 		
 		# El primer jugador que se registra define la dificultad global
 		if GameData.nombres_recibidos == 0:
-			GameData.parejas = dificultad
-			print("Dificultad fijada por el primer jugador: ", dificultad)
+			GameData.parejas = clamp(dificultad, 8, 16)
+			print("Dificultad fijada por el primer jugador: ", GameData.parejas)
 		
 		if sender_id == GameData.p1_peer_id:
 			GameData.nombre_j1 = client_name

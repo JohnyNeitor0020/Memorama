@@ -40,10 +40,13 @@ func _ready() -> void:
 	
 	if parejas_totales <= 8:
 		grid_container.columns = 4  # 4x4 (16 cartas)
+		parejas_totales = 8
 	elif parejas_totales <= 12:
 		grid_container.columns = 6  # 6x4 (24 cartas)
+		parejas_totales = 12
 	else:
 		grid_container.columns = 8  # 8x4 (32 cartas)
+		parejas_totales = 16
 
 	# 3. Iniciar juego (La lógica del turno la maneja el Host)
 	turn_manager.turno_cambiado.connect(_on_turno_cambiado)
@@ -81,8 +84,8 @@ func generar_tablero() -> void:
 		
 	var num_texturas = texturas_cartas.size()
 	
-	# CORRECCIÓN DE PARES: Si pides 16 pares pero solo hay 13 fotos,
-	# el juego se limitará a 13 pares para no crear "falsos positivos" y romper la lógica.
+	# CORRECCIÓN DE PARES: Estrictamente entre 8 y 16, y no más que las texturas.
+	parejas_totales = clamp(parejas_totales, 8, 16)
 	if parejas_totales > num_texturas:
 		parejas_totales = num_texturas
 
