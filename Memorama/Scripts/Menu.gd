@@ -378,4 +378,4 @@ func start_game_dedicated(parejas: int, n1: String, n2: String, p1_id: int, p2_i
 	if GameData.my_role == GameData.Role.SERVER:
 		GameData.current_scene = "Juego"
 			
-	get_tree().change_scene_to_file("res://Escenas/Juego.tscn")
+	GameData.safe_change_scene("res://Escenas/Juego.tscn")

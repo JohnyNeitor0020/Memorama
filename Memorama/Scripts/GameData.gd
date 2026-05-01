@@ -92,4 +92,12 @@ func _on_peer_disconnected(id: int) -> void:
 
 @rpc("authority", "reliable")
 func force_scene_change(scene_path: String) -> void:
-	get_tree().change_scene_to_file(scene_path)
+	safe_change_scene(scene_path)
+
+func safe_change_scene(path: String) -> void:
+	# En Web/Móvil, cambiar de escena de golpe puede causar un crash de memoria.
+	# Usamos call_deferred para que Godot limpie la escena actual antes de cargar la siguiente.
+	call_deferred("_do_change_scene", path)
+
+func _do_change_scene(path: String) -> void:
+	get_tree().change_scene_to_file(path)
