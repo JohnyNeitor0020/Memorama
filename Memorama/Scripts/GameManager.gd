@@ -114,13 +114,18 @@ func sync_board(server_deck: Array) -> void:
 			carta.queue_free()
 	cartas_en_mesa.clear()
 
+	# CARGA OPTIMIZADA PARA MÓVILES:
+	# En lugar de instanciar todas de golpe (pico de RAM), lo hacemos una por una con un mini-delay
 	for id in server_deck:
 		var nueva_carta: Carta = escena_carta.instantiate()
 		grid_container.add_child(nueva_carta)
-		# Le asignamos directamente la textura
 		nueva_carta.configurar(id, texturas_cartas[id])
 		nueva_carta.carta_seleccionada.connect(_on_carta_tocada)
 		cartas_en_mesa.append(nueva_carta)
+		
+		# Si estamos en Web, damos un respiro al procesador cada 4 cartas
+		if OS.has_feature("web") and cartas_en_mesa.size() % 4 == 0:
+			await get_tree().process_frame
 		
 	# 1. Esperamos DOS fotogramas para asegurar que Godot registró todos los nodos nuevos
 	await get_tree().process_frame
