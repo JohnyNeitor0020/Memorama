@@ -4,7 +4,6 @@ extends Node2D
 
 var dificultad_seleccionada := 8
 var mi_nombre := ""
-var nombres_recibidos := 0
 
 @onready var BtnJugar: Control =$CanvasLayer/BtnJugar
 @onready var fila_j1: Control = $CanvasLayer/FilaJ1
@@ -34,6 +33,8 @@ func _ready() -> void:
 	# Ocultamos la fila 2 porque es online
 	fila_j2.hide()
 	input_j1.placeholder_text = "Ingresa tu nombre"
+	# Forzar teclado en móviles al tocar el input
+	input_j1.focus_entered.connect(func(): DisplayServer.virtual_keyboard_show(""))
 	
 	# Señales nativas de la API Multijugador de Godot
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
@@ -240,6 +241,7 @@ func _on_host_pressed() -> void:
 	GameData.p1_peer_id = 0
 	GameData.p2_peer_id = 0
 	nombres_recibidos = 0
+	GameData.current_scene = "Menu" # Para que los espectadores sepan a dónde ir
 	_mostrar_esperando_oponente()
 
 func _mostrar_esperando_oponente() -> void:
@@ -331,23 +333,28 @@ func _on_join_pressed() -> void:
 func _on_connected_to_server() -> void:
 	print("Conectado exitosamente al servidor!")
 	GameData.peer_id = multiplayer.get_unique_id()
-	# Mandamos nuestro nombre al servidor dedicado
-	rpc_id(1, "register_client_name", mi_nombre)
+	# Mandamos nuestro nombre Y la dificultad elegida
+	rpc_id(1, "register_client_name", mi_nombre, dificultad_seleccionada)
 
 @rpc("any_peer", "call_remote", "reliable")
-func register_client_name(client_name: String) -> void:
+func register_client_name(client_name: String, dificultad: int) -> void:
 	if GameData.my_role == GameData.Role.SERVER:
 		var sender_id = multiplayer.get_remote_sender_id()
 		
+		# El primer jugador que se registra define la dificultad global
+		if GameData.nombres_recibidos == 0:
+			GameData.parejas = dificultad
+			print("Dificultad fijada por el primer jugador: ", dificultad)
+		
 		if sender_id == GameData.p1_peer_id:
 			GameData.nombre_j1 = client_name
-			nombres_recibidos += 1
+			GameData.nombres_recibidos += 1
 		elif sender_id == GameData.p2_peer_id:
 			GameData.nombre_j2 = client_name
-			nombres_recibidos += 1
+			GameData.nombres_recibidos += 1
 		
-		# Si ya recibimos ambos nombres, iniciamos el juego
-		if nombres_recibidos >= 2:
+		# Si ya tenemos a los dos, iniciamos
+		if GameData.nombres_recibidos >= 2:
 			rpc("start_game_dedicated", GameData.parejas, GameData.nombre_j1, GameData.nombre_j2, GameData.p1_peer_id, GameData.p2_peer_id)
 
 
@@ -367,5 +374,8 @@ func start_game_dedicated(parejas: int, n1: String, n2: String, p1_id: int, p2_i
 			GameData.my_role = GameData.Role.P2
 		else:
 			GameData.my_role = GameData.Role.SPECTATOR
+			
+	if GameData.my_role == GameData.Role.SERVER:
+		GameData.current_scene = "Juego"
 			
 	get_tree().change_scene_to_file("res://Escenas/Juego.tscn")

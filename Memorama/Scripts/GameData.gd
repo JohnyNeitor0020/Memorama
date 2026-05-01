@@ -20,6 +20,7 @@ var peer_id: int = 1
 var p1_peer_id: int = 0
 var p2_peer_id: int = 0
 var nombres_recibidos := 0
+var current_scene := "Menu" # Para que los espectadores sepan a dónde ir
 
 func reset_server_state() -> void:
 	p1_peer_id = 0
@@ -27,10 +28,18 @@ func reset_server_state() -> void:
 	nombres_recibidos = 0
 	nombre_j1 = "Jugador 1"
 	nombre_j2 = "Jugador 2"
+	current_scene = "Menu"
 
 func _ready() -> void:
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+	
+	# Si un espectador entra tarde, el servidor le avisa dónde estamos
+	multiplayer.peer_connected.connect(func(id):
+		if my_role == Role.SERVER and current_scene == "Juego":
+			rpc_id(id, "force_scene_change", "res://Escenas/Juego.tscn")
+	)
+	
 	_cargar_env_local()
 	
 	if OS.has_environment("PORT"):
@@ -80,3 +89,7 @@ func _on_peer_disconnected(id: int) -> void:
 		if p1_peer_id == 0 and p2_peer_id == 0:
 			reset_server_state()
 			get_tree().change_scene_to_file("res://Escenas/Menu.tscn")
+
+@rpc("authority", "reliable")
+func force_scene_change(scene_path: String) -> void:
+	get_tree().change_scene_to_file(scene_path)
