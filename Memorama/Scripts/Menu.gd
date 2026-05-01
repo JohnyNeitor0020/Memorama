@@ -37,6 +37,7 @@ func _ready() -> void:
 	
 	# Señales nativas de la API Multijugador de Godot
 	multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	
 	_crear_botones_multijugador()
@@ -121,7 +122,7 @@ func _crear_panel_espera() -> void:
 	
 	# Texto
 	var label = Label.new()
-	label.text = "SALA DE ESPA\nCONECTANDO AL CASINO...\nESPERANDO RIVAL"
+	label.text = "SALA DE ESPERA\nCONECTANDO AL CASINO...\nESPERANDO RIVAL"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -238,6 +239,8 @@ func _on_host_pressed() -> void:
 	multiplayer.multiplayer_peer = peer
 	GameData.my_role = GameData.Role.SERVER
 	GameData.peer_id = 1
+	GameData.p1_peer_id = 0
+	GameData.p2_peer_id = 0
 	nombres_recibidos = 0
 	_mostrar_esperando_oponente()
 
@@ -337,6 +340,18 @@ func _on_peer_connected(id: int) -> void:
 		elif GameData.p2_peer_id == 0:
 			GameData.p2_peer_id = id
 			print("Cliente asignado como J2: ", id)
+
+func _on_peer_disconnected(id: int) -> void:
+	print("Jugador desconectado: ", id)
+	if GameData.my_role == GameData.Role.SERVER:
+		if id == GameData.p1_peer_id:
+			GameData.p1_peer_id = 0
+			nombres_recibidos = max(0, nombres_recibidos - 1)
+			print("Slot J1 liberado")
+		elif id == GameData.p2_peer_id:
+			GameData.p2_peer_id = 0
+			nombres_recibidos = max(0, nombres_recibidos - 1)
+			print("Slot J2 liberado")
 
 func _on_connected_to_server() -> void:
 	print("Conectado exitosamente al servidor!")
