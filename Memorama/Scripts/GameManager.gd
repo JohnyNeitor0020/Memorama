@@ -31,22 +31,14 @@ var mazo_servidor: Array = [] # Guardar mazo para nuevos sincronismos
 
 func _ready() -> void:
 	# 1. Leer dificultad desde el menú
-	parejas_totales = GameData.parejas
+	parejas_totales = clamp(GameData.parejas, 8, 16)
 
 	# 2. Conectar ajustes de sonido
 	slider_volumen.value_changed.connect(_on_volumen_cambiado)
 	slider_volumen.value = 0.5
 	panel_ajustes.hide() # Asegurarnos de que empiece oculto
 	
-	if parejas_totales <= 8:
-		grid_container.columns = 4  # 4x4 (16 cartas)
-		parejas_totales = 8
-	elif parejas_totales <= 12:
-		grid_container.columns = 6  # 6x4 (24 cartas)
-		parejas_totales = 12
-	else:
-		grid_container.columns = 8  # 8x4 (32 cartas)
-		parejas_totales = 16
+	_ajustar_columnas(parejas_totales)
 
 	# 3. Iniciar juego (La lógica del turno la maneja el Host)
 	turn_manager.turno_cambiado.connect(_on_turno_cambiado)
@@ -84,10 +76,13 @@ func generar_tablero() -> void:
 		
 	var num_texturas = texturas_cartas.size()
 	
-	# CORRECCIÓN DE PARES: Estrictamente entre 8 y 16, y no más que las texturas.
-	parejas_totales = clamp(parejas_totales, 8, 16)
-	if parejas_totales > num_texturas:
-		parejas_totales = num_texturas
+	# LÍMITE ABSOLUTO: No más de 16 pares (32 cartas) y no más que las texturas disponibles.
+	var n_pares = clamp(parejas_totales, 8, 16)
+	if n_pares > num_texturas:
+		n_pares = num_texturas
+	
+	parejas_totales = n_pares # Sincronizamos el valor real
+	print("Generando tablero con ", parejas_totales, " parejas (", parejas_totales * 2, " cartas)")
 
 	var ids: Array[int] = []
 	for i in range(parejas_totales):
@@ -111,15 +106,24 @@ func request_initial_sync() -> void:
 
 @rpc("authority", "call_local", "reliable")
 func sync_board(server_deck: Array) -> void:
-	# Limpiamos el tablero por si es una re-sincronización y evitar duplicados
-	for carta in cartas_en_mesa:
-		if is_instance_valid(carta):
-			carta.queue_free()
-	cartas_en_mesa.clear()
+	# LIMPIEZA TOTAL: Borramos CUALQUIER nodo hijo en el contenedor para evitar cartas duplicadas o huérfanas
+	for child in grid_container.get_children():
+		child.queue_free()
+	
+	# Ajustamos las columnas según el tamaño real del mazo, pero limitado a 16 pares
+	var n_pares_recibidos = server_deck.size() / 2
+	parejas_totales = clamp(n_pares_recibidos, 8, 16)
+	
+	_ajustar_columnas(parejas_totales)
+
+	# Si el mazo es mayor a 32, lo truncamos para no romper la UI
+	var mazo_final = server_deck
+	if mazo_final.size() > 32:
+		mazo_final = server_deck.slice(0, 32)
+		print("ADVERTENCIA: El servidor mandó demasiadas cartas. Truncando a 32.")
 
 	# CARGA OPTIMIZADA PARA MÓVILES:
-	# En lugar de instanciar todas de golpe (pico de RAM), lo hacemos una por una con un mini-delay
-	for id in server_deck:
+	for id in mazo_final:
 		var nueva_carta: Carta = escena_carta.instantiate()
 		grid_container.add_child(nueva_carta)
 		nueva_carta.configurar(id, texturas_cartas[id])
@@ -306,28 +310,33 @@ func _reiniciar_partida_local() -> void:
 	cartas_seleccionadas.clear()
 	rematch_votos = 0
 	
-	# Reseteamos la transformación visual para que no empiece desfasado
+	# Reseteamos la transformación visual
 	grid_container.rotation = 0
 	grid_container.scale = Vector2(1, 1)
 	
 	# Limpiamos UI
 	ui_manager.actualizar_puntos(0, 0, 0)
 	ui_manager.boton_reiniciar.hide()
-	ui_manager.boton_salir.show() # Mantener visible al reiniciar
+	ui_manager.boton_salir.show()
 	ui_manager.texto_tiempo.modulate = Color.WHITE
 	
-	# Limpiamos tablero físicamente
-	for carta in cartas_en_mesa:
-		if is_instance_valid(carta):
-			carta.queue_free()
+	# Limpieza física TOTAL del tablero
+	for child in grid_container.get_children():
+		child.queue_free()
 	cartas_en_mesa.clear()
 	
-	# Si soy el Servidor Dedicado, genero el nuevo tablero y reseteo el TurnManager
 	if GameData.my_role == GameData.Role.SERVER:
 		turn_manager.iniciar()
-		# El servidor avisa del nuevo turno a todos
 		rpc("sync_turn", turn_manager.obtener_turno(), 0, 0, 0)
 		generar_tablero()
+
+func _ajustar_columnas(n_pares: int) -> void:
+	if n_pares <= 8:
+		grid_container.columns = 4
+	elif n_pares <= 12:
+		grid_container.columns = 6
+	else:
+		grid_container.columns = 8
 	
 # --- AJUSTES DE SONIDO ---
 func _on_btn_ajustes_pressed() -> void:
