@@ -36,8 +36,6 @@ func _ready() -> void:
 	input_j1.placeholder_text = "Ingresa tu nombre"
 	
 	# Señales nativas de la API Multijugador de Godot
-	multiplayer.peer_connected.connect(_on_peer_connected)
-	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	
 	_crear_botones_multijugador()
@@ -329,29 +327,6 @@ func _on_join_pressed() -> void:
 	multiplayer.multiplayer_peer = peer
 	GameData.my_role = GameData.Role.NONE # Esperamos a que el servidor nos asigne un rol
 	print("Conectando al servidor...")
-
-func _on_peer_connected(id: int) -> void:
-	print("Jugador conectado con ID: ", id)
-	if GameData.my_role == GameData.Role.SERVER:
-		# Servidor asigna los IDs
-		if GameData.p1_peer_id == 0:
-			GameData.p1_peer_id = id
-			print("Cliente asignado como J1: ", id)
-		elif GameData.p2_peer_id == 0:
-			GameData.p2_peer_id = id
-			print("Cliente asignado como J2: ", id)
-
-func _on_peer_disconnected(id: int) -> void:
-	print("Jugador desconectado: ", id)
-	if GameData.my_role == GameData.Role.SERVER:
-		if id == GameData.p1_peer_id:
-			GameData.p1_peer_id = 0
-			nombres_recibidos = max(0, nombres_recibidos - 1)
-			print("Slot J1 liberado")
-		elif id == GameData.p2_peer_id:
-			GameData.p2_peer_id = 0
-			nombres_recibidos = max(0, nombres_recibidos - 1)
-			print("Slot J2 liberado")
 
 func _on_connected_to_server() -> void:
 	print("Conectado exitosamente al servidor!")

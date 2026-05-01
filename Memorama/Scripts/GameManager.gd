@@ -108,6 +108,12 @@ func request_initial_sync() -> void:
 
 @rpc("authority", "call_local", "reliable")
 func sync_board(server_deck: Array) -> void:
+	# Limpiamos el tablero por si es una re-sincronización y evitar duplicados
+	for carta in cartas_en_mesa:
+		if is_instance_valid(carta):
+			carta.queue_free()
+	cartas_en_mesa.clear()
+
 	for id in server_deck:
 		var nueva_carta: Carta = escena_carta.instantiate()
 		grid_container.add_child(nueva_carta)

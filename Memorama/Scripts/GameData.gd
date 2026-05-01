@@ -19,8 +19,18 @@ var my_role: Role = Role.NONE
 var peer_id: int = 1
 var p1_peer_id: int = 0
 var p2_peer_id: int = 0
+var nombres_recibidos := 0
+
+func reset_server_state() -> void:
+	p1_peer_id = 0
+	p2_peer_id = 0
+	nombres_recibidos = 0
+	nombre_j1 = "Jugador 1"
+	nombre_j2 = "Jugador 2"
 
 func _ready() -> void:
+	multiplayer.peer_connected.connect(_on_peer_connected)
+	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	_cargar_env_local()
 	
 	if OS.has_environment("PORT"):
@@ -49,3 +59,24 @@ func _cargar_env_local() -> void:
 						if not OS.has_environment(partes[0].strip_edges()):
 							OS.set_environment(partes[0].strip_edges(), partes[1].strip_edges())
 			file.close()
+
+func _on_peer_connected(id: int) -> void:
+	if my_role == Role.SERVER:
+		if p1_peer_id == 0:
+			p1_peer_id = id
+		elif p2_peer_id == 0:
+			p2_peer_id = id
+
+func _on_peer_disconnected(id: int) -> void:
+	if my_role == Role.SERVER:
+		if id == p1_peer_id:
+			p1_peer_id = 0
+			nombres_recibidos = max(0, nombres_recibidos - 1)
+		elif id == p2_peer_id:
+			p2_peer_id = 0
+			nombres_recibidos = max(0, nombres_recibidos - 1)
+		
+		# Si ya no queda nadie, el servidor vuelve al menú para estar limpio
+		if p1_peer_id == 0 and p2_peer_id == 0:
+			reset_server_state()
+			get_tree().change_scene_to_file("res://Escenas/Menu.tscn")
