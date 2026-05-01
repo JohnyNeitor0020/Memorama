@@ -240,7 +240,7 @@ func _on_host_pressed() -> void:
 	GameData.peer_id = 1
 	GameData.p1_peer_id = 0
 	GameData.p2_peer_id = 0
-	nombres_recibidos = 0
+	GameData.nombres_recibidos = 0
 	GameData.current_scene = "Menu" # Para que los espectadores sepan a dónde ir
 	_mostrar_esperando_oponente()
 
