@@ -112,6 +112,7 @@ func sync_board(server_deck: Array) -> void:
 		child.queue_free()
 	
 	cartas_en_mesa.clear()
+	cartas_seleccionadas.clear()
 	
 	# Ajustamos las columnas según el tamaño real del mazo, pero limitado a 16 pares
 	var n_pares_recibidos = server_deck.size() / 2
@@ -140,6 +141,13 @@ func sync_board(server_deck: Array) -> void:
 	# 1. Esperamos DOS fotogramas para asegurar que Godot registró todos los nodos nuevos
 	await get_tree().process_frame
 	await get_tree().process_frame 
+
+	# 1.5 NUCLEAR CHECK: Eliminar cualquier hijo extra que se haya colado mágicamente
+	while grid_container.get_child_count() > 32:
+		var last_child = grid_container.get_child(grid_container.get_child_count() - 1)
+		grid_container.remove_child(last_child)
+		last_child.queue_free()
+		print("¡ELIMINANDO CARTA EXTRA FORZOSAMENTE!")
 
 	# 2. Obligamos al contenedor a recalcular su tamaño real con las cartas dentro
 	grid_container.reset_size()
