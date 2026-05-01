@@ -144,14 +144,18 @@ func sync_board(server_deck: Array) -> void:
 	# 3. Ahora sí, calculamos el centro perfecto con el tamaño real actualizado
 	grid_container.pivot_offset = grid_container.size / 2.0
 
-	# 4. Aplicamos la escala correspondiente
-	if parejas_totales <= 8:
-		grid_container.scale = Vector2(0.6, 0.6)
-	elif parejas_totales <= 12:
-		grid_container.scale = Vector2(0.6, 0.6)
-	else:
-		grid_container.scale = Vector2(0.65, 0.65)
+	# 4. Calculamos una escala dinámica para que siempre quepa en pantalla
+	var max_width = 1150.0
+	var max_height = 500.0 # Margen vertical generoso para los textos
 	
+	var scale_x = max_width / grid_container.size.x
+	var scale_y = max_height / grid_container.size.y
+	
+	var final_scale = min(scale_x, scale_y)
+	final_scale = min(final_scale, 0.8) # Límite máximo para que no sean gigantes en Fácil
+	
+	grid_container.scale = Vector2(final_scale, final_scale)
+
 	# 5. Centrado manual absoluto (Garantiza que se vea igual en Host y Cliente)
 	var screen_size = Vector2(1280, 720) 
 	var scaled_size = grid_container.size * grid_container.scale
