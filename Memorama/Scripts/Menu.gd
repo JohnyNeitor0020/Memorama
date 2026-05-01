@@ -5,6 +5,7 @@ extends Node2D
 var dificultad_seleccionada := 8
 var mi_nombre := ""
 var nombres_recibidos := 0
+const PORT = 10000
 
 @onready var BtnJugar: Control =$CanvasLayer/BtnJugar
 @onready var fila_j1: Control = $CanvasLayer/FilaJ1
@@ -199,15 +200,18 @@ func _on_btn_salir_pressed() -> void:
 # --- AJUSTES DE SONIDO ---
 func _on_btn_ajustes_pressed() -> void:
 	panel_ajustes.show()
+	panel_ajustes.move_to_front()
 	fila_j1.hide()
 	fila_j2.hide()
 	panel_dificultad.hide()
+	if vbox_botones: vbox_botones.hide()
 
 func _on_btn_cerrar_ajustes_pressed() -> void:
 	panel_ajustes.hide()
 	fila_j1.show()
-	fila_j2.show()
+	# fila_j2 se mantiene oculto porque es modo online (solo 1 nombre local)
 	panel_dificultad.show()
+	if vbox_botones: vbox_botones.show()
 
 func _on_volumen_cambiado(valor: float) -> void:
 	var bus_index := AudioServer.get_bus_index("Master")
@@ -226,8 +230,7 @@ func _on_host_pressed() -> void:
 	GameData.parejas = dificultad_seleccionada
 
 	var peer = WebSocketMultiplayerPeer.new()
-	# Al crear el servidor, usamos el puerto y la IP de escucha desde GameData
-	var error = peer.create_server(GameData.server_port, GameData.server_bind_ip) 
+	var error = peer.create_server(PORT) 
 	if error != OK:
 		print("Error al crear el servidor: ", error)
 		return
@@ -311,14 +314,8 @@ func _on_join_pressed() -> void:
 
 	var peer = WebSocketMultiplayerPeer.new()
 	
-	# Construir la URL de conexión según el modo configurado en .env
-	var url: String
-	if GameData.connection_mode == "remote" and GameData.server_url != "":
-		# Conexión a servidor remoto (Render) — usa wss:// (WebSocket seguro)
-		url = "wss://" + GameData.server_url
-	else:
-		# Conexión local para pruebas
-		url = "ws://" + GameData.client_connect_ip + ":" + str(GameData.server_port)
+	# Conexión directa a la URL segura para evitar el bloqueo de iOS y problemas de Mixed Content
+	var url = "wss://memorapoker0020.onrender.com"
 	
 	print("Conectando a: ", url)
 	var error = peer.create_client(url)
