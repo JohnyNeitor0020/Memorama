@@ -27,6 +27,7 @@ var tiempo_juego := 0.0
 var juego_terminado := false
 var contador_turnos := 0
 var rematch_votos := 0
+var mazo_servidor: Array = [] # Guardar mazo para nuevos sincronismos
 
 func _ready() -> void:
 	# 1. Leer dificultad desde el menú
@@ -56,16 +57,16 @@ func _ready() -> void:
 	
 	if GameData.my_role == GameData.Role.SERVER:
 		turn_manager.iniciar()
+		generar_tablero()
 		# El servidor no tiene UI, pero sí controla el flujo
 		ui_manager.mostrar_turno(turn_manager.obtener_turno())
-		# El host avisa de inmediato a los clientes de quién es el primer turno
-		rpc("sync_turn", turn_manager.obtener_turno(), 0, 0, 0)
-		
+	else:
+		# Si soy cliente, le pido al servidor los datos iniciales (por si me los perdí al cargar)
+		rpc_id(1, "request_initial_sync")
+	
 	# 4. Señales de red para abandono
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
-		
-	generar_tablero()
 
 func _process(delta: float) -> void:
 	if juego_terminado:
@@ -90,9 +91,20 @@ func generar_tablero() -> void:
 		ids.append(i)
 		ids.append(i)
 	ids.shuffle()
+	mazo_servidor = ids
 
 	# El Host envía el arreglo a los clientes y a sí mismo
-	rpc("sync_board", ids)
+	rpc("sync_board", mazo_servidor)
+	rpc("sync_turn", turn_manager.obtener_turno(), 0, 0, 0)
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_initial_sync() -> void:
+	if GameData.my_role == GameData.Role.SERVER:
+		var peer_id = multiplayer.get_remote_sender_id()
+		print("Sincronizando cliente ", peer_id)
+		# Enviamos específicamente al que lo pidió
+		rpc_id(peer_id, "sync_board", mazo_servidor)
+		rpc_id(peer_id, "sync_turn", turn_manager.obtener_turno(), puntos_j1, puntos_j2, contador_turnos)
 
 @rpc("authority", "call_local", "reliable")
 func sync_board(server_deck: Array) -> void:
