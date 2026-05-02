@@ -44,13 +44,14 @@ func _ready() -> void:
 		input_j1.text = "Movil_" + str(numero_random)
 		input_j1.editable = false
 		input_j1.virtual_keyboard_enabled = false
-		input_j1.focus_mode = Control.FOCUS_NONE # ¡Vuelve el cuadro intocable!
+		input_j1.focus_mode = Control.FOCUS_NONE
+		# ¡LA BARRERA DEFINITIVA!
+		input_j1.mouse_filter = Control.MOUSE_FILTER_IGNORE 
 	else:
 		input_j1.placeholder_text = "Ingresa tu nombre"
 		input_j1.editable = true
 		input_j1.virtual_keyboard_enabled = false
 	# -----------------------------------
-	
 	# --- 2. REPARACIÓN DEL BOTÓN "EMPEZAR JUEGO" ---
 	BtnJugar.show() 
 	
