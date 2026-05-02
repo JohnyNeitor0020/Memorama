@@ -1,13 +1,10 @@
 extends Node2D
 
 # Las variables de red ahora vienen de GameData (que lee de .env)
-
 var dificultad_seleccionada := 8
 var mi_nombre := ""
-var nombre_en_proceso := false
-var js_callback 
 
-@onready var BtnJugar: Control =$CanvasLayer/BtnJugar
+@onready var BtnJugar: Control = $CanvasLayer/BtnJugar
 @onready var fila_j1: Control = $CanvasLayer/FilaJ1
 @onready var fila_j2: Control = $CanvasLayer/FilaJ2
 @onready var panel_dificultad: Control = $CanvasLayer/PanelDificultad
@@ -21,89 +18,57 @@ var js_callback
 
 var estilo_off: StyleBoxFlat
 var estilo_on: StyleBoxFlat
-var vbox_botones: VBoxContainer
 var panel_espera: Panel
 
 func _ready() -> void:
-	name = "Menu" 
+	name = "Menu"
 	_crear_estilos()
-	_crear_panel_espera() 
+	_crear_panel_espera()
 	_seleccionar_dificultad(8)
+	
 	slider_volumen.value_changed.connect(_on_volumen_cambiado)
 	slider_volumen.value = 0.5
 	
 	fila_j2.hide()
 	
-	# --- DETECCIÓN INTELIGENTE DE PC vs CELULAR ---
+	# --- 1. DETECCIÓN MÓVIL BLINDADA ---
 	var es_movil = false
-	
 	if OS.has_feature("web"):
-		# Le preguntamos a JavaScript si el navegador es de un dispositivo móvil
-		var resultado_js = JavaScriptBridge.eval("/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);")
-		if resultado_js == true:
+		# Le pedimos a JS que devuelva 1 (movil) o 0 (PC) para evitar confusiones
+		var resultado_js = JavaScriptBridge.eval("(/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) ? 1 : 0")
+		if str(resultado_js) == "1":
 			es_movil = true
 
 	if es_movil:
-		# ¡MODO CELULAR: A PRUEBA DE EXPLOSIONES!
 		var numero_random = randi() % 1000
 		input_j1.text = "Movil_" + str(numero_random)
 		input_j1.editable = false
 		input_j1.virtual_keyboard_enabled = false
+		input_j1.focus_mode = Control.FOCUS_NONE # ¡Vuelve el cuadro intocable!
 	else:
-		# ¡MODO PC: VÍA LIBRE PARA ESCRIBIR!
 		input_j1.placeholder_text = "Ingresa tu nombre"
 		input_j1.editable = true
-		input_j1.virtual_keyboard_enabled = false # Lo apagamos por si acaso, en PC usamos el teclado físico
-	# ----------------------------------------------
+		input_j1.virtual_keyboard_enabled = false
+	# -----------------------------------
+	
+	# --- 2. REPARACIÓN DEL BOTÓN "EMPEZAR JUEGO" ---
+	BtnJugar.show() 
+	
+	# Si el botón estaba conectado a la función vieja (offline), la desconectamos
+	if BtnJugar.pressed.is_connected(_on_btn_jugar_pressed):
+		BtnJugar.pressed.disconnect(_on_btn_jugar_pressed)
+		
+	# Lo conectamos a la función de red (online)
+	if not BtnJugar.pressed.is_connected(_on_join_pressed):
+		BtnJugar.pressed.connect(_on_join_pressed)
+	# -----------------------------------------------
 	
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
-	_crear_botones_multijugador()
+
 	# AUTO-HOST PARA SERVIDORES (Render)
 	if DisplayServer.get_name() == "headless":
 		print("Modo servidor (headless) detectado. Auto-hosteando...")
 		call_deferred("_on_host_pressed")
-# Esta función es llamada automáticamente por JavaScript cuando el usuario le da Aceptar
-func _resultado_del_prompt(args):
-	nombre_en_proceso = false # Quitamos el candado
-	
-	if args.size() > 0 and args[0] != null:
-		var nombre_escrito = str(args[0]).strip_edges()
-		if nombre_escrito != "":
-			input_j1.text = nombre_escrito
-			
-func _crear_botones_multijugador() -> void:
-	# 1. Ocultar el botón original
-	BtnJugar.hide()
-	
-	# 2. Crear VBoxContainer para alinear los botones dinámicos al centro
-	vbox_botones = VBoxContainer.new()
-	# Lo posicionamos un poco abajo del centro de la pantalla (ajustable)
-	vbox_botones.position = Vector2(get_viewport_rect().size.x / 2.0 - 125, get_viewport_rect().size.y - 200)
-	vbox_botones.custom_minimum_size = Vector2(250, 120)
-	vbox_botones.add_theme_constant_override("separation", 15)
-	$CanvasLayer.add_child(vbox_botones)
-	
-	# 3. Crear Botón Host (solo en modo local, en remoto el servidor ya está en Render)
-	if GameData.connection_mode != "remote":
-		var btn_host = Button.new()
-		btn_host.text = "Crear Partida"
-		btn_host.custom_minimum_size = Vector2(250, 50)
-		btn_host.add_theme_stylebox_override("normal", estilo_off)
-		btn_host.add_theme_stylebox_override("hover", estilo_on)
-		btn_host.add_theme_font_size_override("font_size", 20)
-		btn_host.pressed.connect(_on_host_pressed)
-		vbox_botones.add_child(btn_host)
-	
-	# 4. Crear Botón Join
-	var btn_join = Button.new()
-	btn_join.text = "Unirse a Partida"
-	btn_join.custom_minimum_size = Vector2(250, 50)
-	# Reutilizamos tus estilos del casino
-	btn_join.add_theme_stylebox_override("normal", estilo_off)
-	btn_join.add_theme_stylebox_override("hover", estilo_on)
-	btn_join.add_theme_font_size_override("font_size", 20)
-	btn_join.pressed.connect(_on_join_pressed)
-	vbox_botones.add_child(btn_join)
 
 func _crear_panel_espera() -> void:
 	# Contenedor principal de pantalla completa
@@ -125,7 +90,7 @@ func _crear_panel_espera() -> void:
 	vbox.add_theme_constant_override("separation", 30)
 	center.add_child(vbox)
 	
-	# Cuadro de mensaje (el que tenías pero más grande)
+	# Cuadro de mensaje 
 	var box = Panel.new()
 	box.custom_minimum_size = Vector2(500, 250)
 	var estilo_box = StyleBoxFlat.new()
@@ -175,9 +140,8 @@ func _on_cancel_pressed() -> void:
 	
 	# Volver al menú
 	panel_espera.hide()
-	vbox_botones.show()
+	BtnJugar.show()
 	print("Conexión cancelada por el usuario")
-
 
 func _crear_estilos() -> void:
 	estilo_off = StyleBoxFlat.new()
@@ -214,7 +178,10 @@ func _on_btn_normal_pressed() -> void:
 func _on_btn_dificil_pressed() -> void:
 	_seleccionar_dificultad(16)
 
-# Este método se ha eliminado porque validamos localmente en los botones
+func _on_btn_jugar_pressed() -> void:
+	# Esta función se mantiene por si en el futuro decides 
+	# volver a conectar el modo local/offline.
+	pass
 
 func _on_btn_salir_pressed() -> void:
 	get_tree().quit()
@@ -226,14 +193,13 @@ func _on_btn_ajustes_pressed() -> void:
 	fila_j1.hide()
 	fila_j2.hide()
 	panel_dificultad.hide()
-	if vbox_botones: vbox_botones.hide()
+	BtnJugar.hide()
 
 func _on_btn_cerrar_ajustes_pressed() -> void:
 	panel_ajustes.hide()
 	fila_j1.show()
-	# fila_j2 se mantiene oculto porque es modo online (solo 1 nombre local)
 	panel_dificultad.show()
-	if vbox_botones: vbox_botones.show()
+	BtnJugar.show()
 
 func _on_volumen_cambiado(valor: float) -> void:
 	var bus_index := AudioServer.get_bus_index("Master")
@@ -243,9 +209,6 @@ func _on_volumen_cambiado(valor: float) -> void:
 		AudioServer.set_bus_mute(bus_index, false)
 		AudioServer.set_bus_volume_db(bus_index, linear_to_db(valor))
 
-func _on_button_pressed() -> void:
-	pass
-
 # --- RED MULTIJUGADOR ---
 func _on_host_pressed() -> void:
 	# El host dedicado no juega, así que no necesita leer su nombre.
@@ -253,7 +216,7 @@ func _on_host_pressed() -> void:
 
 	var peer = WebSocketMultiplayerPeer.new()
 	# Usamos GameData.server_port porque ya lee automáticamente la variable PORT de Render
-	var error = peer.create_server(GameData.server_port) 
+	var error = peer.create_server(GameData.server_port)
 	if error != OK:
 		print("Error al crear el servidor: ", error)
 		return
@@ -271,12 +234,11 @@ func _mostrar_esperando_oponente() -> void:
 	# Ocultar elementos del menú para limpiar la vista
 	fila_j1.hide()
 	panel_dificultad.hide()
-	vbox_botones.hide()
+	BtnJugar.hide()
 	
 	# 1. Crear un Panel estilizado para el mensaje
 	var panel = PanelContainer.new()
 	panel.custom_minimum_size = Vector2(500, 250)
-	# Reutilizamos el estilo oscuro con borde dorado del casino
 	panel.add_theme_stylebox_override("panel", estilo_off)
 	
 	# 2. Contenedor de márgenes interno
@@ -299,7 +261,7 @@ func _mostrar_esperando_oponente() -> void:
 	lbl_titulo.add_theme_color_override("font_color", Color(0.96, 0.84, 0.30)) # Dorado
 	vbox.add_child(lbl_titulo)
 	
-	# 5. Texto de estado con animación de puntos (simulada)
+	# 5. Texto de estado 
 	var lbl_espera = Label.new()
 	lbl_espera.text = "Esperando a que un oponente se una..."
 	lbl_espera.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -314,8 +276,7 @@ func _mostrar_esperando_oponente() -> void:
 	btn_cancelar.add_theme_stylebox_override("normal", estilo_off)
 	btn_cancelar.add_theme_stylebox_override("hover", estilo_on)
 	btn_cancelar.add_theme_color_override("font_color", Color(0.96, 0.84, 0.30))
-	# Si cancela, cerramos el servidor de red y recargamos la escena
-	btn_cancelar.pressed.connect(func(): 
+	btn_cancelar.pressed.connect(func():
 		if multiplayer.multiplayer_peer:
 			multiplayer.multiplayer_peer.close()
 		multiplayer.multiplayer_peer = null
@@ -325,7 +286,6 @@ func _mostrar_esperando_oponente() -> void:
 	
 	# 7. Centrado absoluto en pantalla
 	$CanvasLayer.add_child(panel)
-	# Forzamos la actualización para obtener el tamaño real si es posible, o usamos el mínimo
 	var screen_size = get_viewport_rect().size
 	panel.global_position = (screen_size / 2.0) - (panel.custom_minimum_size / 2.0)
 
@@ -336,7 +296,7 @@ func _on_join_pressed() -> void:
 
 	# Mostrar el cuadro de espera con diseño premium
 	panel_espera.show()
-	vbox_botones.hide()
+	BtnJugar.hide()
 
 	var peer = WebSocketMultiplayerPeer.new()
 	
@@ -379,7 +339,6 @@ func register_client_name(client_name: String, dificultad: int) -> void:
 		# Si ya tenemos a los dos, iniciamos
 		if GameData.nombres_recibidos >= 2:
 			rpc("start_game_dedicated", GameData.parejas, GameData.nombre_j1, GameData.nombre_j2, GameData.p1_peer_id, GameData.p2_peer_id)
-
 
 @rpc("authority", "call_local", "reliable")
 func start_game_dedicated(parejas: int, n1: String, n2: String, p1_id: int, p2_id: int) -> void:
