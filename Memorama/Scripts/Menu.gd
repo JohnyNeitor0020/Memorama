@@ -33,27 +33,33 @@ func _ready() -> void:
 	# Ocultamos la fila 2 porque es online
 	fila_j2.hide()
 	input_j1.placeholder_text = "Ingresa tu nombre"
-	# Nuevo método usando JavaScript nativo para web móvil
-	input_j1.focus_entered.connect(func():
-		if OS.has_feature("web"):
-			# Lanzamos una alerta nativa del navegador
-			var js_name = JavaScriptBridge.eval("prompt('Ingresa tu nombre para jugar al Casino:', '');")
-			
-			# Si el jugador escribió algo y no le dio cancelar
-			if js_name != null and str(js_name).strip_edges() != "":
-				input_j1.text = str(js_name)
-			
-			# Soltamos el input para que no se cicle
-			input_j1.release_focus()
+	
+	# --- SOLUCIÓN TECLADO MÓVIL ---
+	# 1. Apagamos el teclado de Godot para que no pelee con el celular
+	input_j1.virtual_keyboard_enabled = false
+	
+	# 2. Detectamos el toque físico directo (click) en la pantalla
+	input_j1.gui_input.connect(func(event: InputEvent):
+		# En celulares, los toques se leen como el click izquierdo del mouse
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			if OS.has_feature("web"):
+				# window.prompt es más seguro en navegadores estrictos
+				var js_name = JavaScriptBridge.eval("window.prompt('Ingresa tu nombre para jugar al Casino:', '');")
+				
+				if js_name != null and str(js_name).strip_edges() != "":
+					input_j1.text = str(js_name)
+				
+				input_j1.release_focus()
+				input_j1.accept_event() # Corta el evento para que Godot no haga nada más
 	)	
+	# ------------------------------
+	
 	# Señales nativas de la API Multijugador de Godot
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	
 	_crear_botones_multijugador()
 	
 	# AUTO-HOST PARA SERVIDORES (Render)
-	# Si detectamos que el juego corre sin interfaz gráfica (modo headless), 
-	# simulamos el clic en "Crear Partida" inmediatamente para abrir el puerto.
 	if DisplayServer.get_name() == "headless":
 		print("Modo servidor (headless) detectado. Auto-hosteando...")
 		call_deferred("_on_host_pressed")
