@@ -375,7 +375,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_btn_jugar")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_jugar")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_jugar")
 theme_override_styles/focus = SubResource("StyleBoxFlat_btn_jugar")
-text = "◆  EMPEZAR JUEGO  ◆"
+text = "EMPEZAR JUEGO"
 
 [node name="BtnAjustes" type="Button" parent="CanvasLayer" unique_id=602079933]
 offset_left = 44.0
