@@ -267,7 +267,6 @@ text = "Jugador 1= 0 - Jugador 2 = 0"
 label_settings = SubResource("LabelSettings_furlt")
 
 [node name="BotonReiniciar" type="Button" parent="CanvasLayer" unique_id=1545377846]
-visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -283,7 +282,7 @@ theme_override_font_sizes/font_size = 48
 theme_override_styles/normal = SubResource("StyleBoxFlat_kcoml")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_furlt")
 theme_override_styles/hover = SubResource("StyleBoxFlat_o0pga")
-text = " ◆JUGAR OTRA VEZ ◆"
+text = "JUGAR OTRA VEZ"
 
 [node name="BtnAjustes" type="Button" parent="CanvasLayer" unique_id=798477119]
 offset_left = 44.0
