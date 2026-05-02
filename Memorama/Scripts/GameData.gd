@@ -54,8 +54,6 @@ func _ready() -> void:
 		connection_mode = OS.get_environment("MODE")
 
 func _cargar_env_local() -> void:
-	# En producción (ej. Docker/Render), las variables ya estarán en el OS.
-	# Esta función solo lee el archivo .env para pruebas locales en Godot.
 	if FileAccess.file_exists("res://.env"):
 		var file = FileAccess.open("res://.env", FileAccess.READ)
 		if file:

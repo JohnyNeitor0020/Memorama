@@ -4,6 +4,7 @@ extends Node2D
 
 var dificultad_seleccionada := 8
 var mi_nombre := ""
+var nombre_en_proceso := false
 
 @onready var BtnJugar: Control =$CanvasLayer/BtnJugar
 @onready var fila_j1: Control = $CanvasLayer/FilaJ1
@@ -34,26 +35,32 @@ func _ready() -> void:
 	fila_j2.hide()
 	input_j1.placeholder_text = "Ingresa tu nombre"
 	
-	# --- SOLUCIÓN TECLADO MÓVIL ---
-	# 1. Apagamos el teclado de Godot para que no pelee con el celular
 	input_j1.virtual_keyboard_enabled = false
 	
-	# 2. Detectamos el toque físico directo (click) en la pantalla
 	input_j1.gui_input.connect(func(event: InputEvent):
-		# En celulares, los toques se leen como el click izquierdo del mouse
-		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		# Detectamos toque de pantalla O click de mouse, y validamos que sea cuando "presiona" (no cuando suelta)
+		if (event is InputEventMouseButton or event is InputEventScreenTouch) and event.is_pressed():
+			
+			# Si ya está abierta la ventana, ignoramos los demás toques
+			if nombre_en_proceso:
+				return
+				
+			nombre_en_proceso = true # Ponemos el candado
+			
 			if OS.has_feature("web"):
-				# window.prompt es más seguro en navegadores estrictos
 				var js_name = JavaScriptBridge.eval("window.prompt('Ingresa tu nombre para jugar al Casino:', '');")
 				
 				if js_name != null and str(js_name).strip_edges() != "":
 					input_j1.text = str(js_name)
 				
 				input_j1.release_focus()
-				input_j1.accept_event() # Corta el evento para que Godot no haga nada más
+				input_j1.accept_event()
+			
+			# Esperamos medio segundo antes de quitar el candado para evitar doble-clicks rápidos
+			await get_tree().create_timer(0.5).timeout
+			nombre_en_proceso = false # Quitamos el candado
 	)	
-	# ------------------------------
-	
+	# ------------------------------------------
 	# Señales nativas de la API Multijugador de Godot
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	
