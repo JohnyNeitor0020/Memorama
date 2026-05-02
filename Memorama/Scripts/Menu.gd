@@ -31,13 +31,16 @@ func _ready() -> void:
 	
 	fila_j2.hide()
 	
-	# --- 1. DETECCIÓN MÓVIL BLINDADA ---
+	# --- 1. DETECCIÓN MÓVIL NATIVA (SIN JAVASCRIPT) ---
 	var es_movil = false
-	if OS.has_feature("web"):
-		# Le pedimos a JS que devuelva 1 (movil) o 0 (PC) para evitar confusiones
-		var resultado_js = JavaScriptBridge.eval("(/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) ? 1 : 0")
-		if str(resultado_js) == "1":
-			es_movil = true
+	
+	# Godot 4 sabe mágicamente si el HTML5 corre en un celular Android o iOS
+	if OS.has_feature("web_android") or OS.has_feature("web_ios"):
+		es_movil = true
+		
+	# También bloqueamos por si Godot detecta pantalla táctil directamente
+	if DisplayServer.is_touchscreen_available():
+		es_movil = true
 
 	if es_movil:
 		var numero_random = randi() % 1000
@@ -45,13 +48,12 @@ func _ready() -> void:
 		input_j1.editable = false
 		input_j1.virtual_keyboard_enabled = false
 		input_j1.focus_mode = Control.FOCUS_NONE
-		# ¡LA BARRERA DEFINITIVA!
 		input_j1.mouse_filter = Control.MOUSE_FILTER_IGNORE 
 	else:
 		input_j1.placeholder_text = "Ingresa tu nombre"
 		input_j1.editable = true
 		input_j1.virtual_keyboard_enabled = false
-	# -----------------------------------
+	# --------------------------------------------------
 	# --- 2. REPARACIÓN DEL BOTÓN "EMPEZAR JUEGO" ---
 	BtnJugar.show() 
 	
