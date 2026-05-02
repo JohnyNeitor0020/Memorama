@@ -106,7 +106,7 @@ func request_initial_sync() -> void:
 
 @rpc("authority", "call_local", "reliable")
 func sync_board(server_deck: Array) -> void:
-	# LIMPIEZA TOTAL: Borramos CUALQUIER nodo hijo en el contenedor de forma INMEDIATA
+	# 1. LIMPIEZA TOTAL E INMEDIATA (Sin pausas asíncronas)
 	for child in grid_container.get_children():
 		grid_container.remove_child(child)
 		child.queue_free()
@@ -114,60 +114,40 @@ func sync_board(server_deck: Array) -> void:
 	cartas_en_mesa.clear()
 	cartas_seleccionadas.clear()
 	
-	# Ajustamos las columnas según el tamaño real del mazo, pero limitado a 16 pares
+	# 2. Ajuste de pares y columnas
 	var n_pares_recibidos = server_deck.size() / 2
 	parejas_totales = clamp(n_pares_recibidos, 8, 16)
-	
 	_ajustar_columnas(parejas_totales)
 
-	# Si el mazo es mayor a 32, lo truncamos brutalmente para no romper la UI
 	var mazo_final = server_deck.duplicate()
 	if mazo_final.size() > 32:
 		mazo_final.resize(32)
-		print("ADVERTENCIA: El servidor mandó demasiadas cartas. Truncando a 32.")
 
-	# CARGA OPTIMIZADA PARA MÓVILES:
+	# 3. CARGA DIRECTA Y ESTRICTA (Eliminamos el 'await' para evitar desincronización)
 	for id in mazo_final:
 		var nueva_carta: Carta = escena_carta.instantiate()
 		grid_container.add_child(nueva_carta)
 		nueva_carta.configurar(id, texturas_cartas[id])
 		nueva_carta.carta_seleccionada.connect(_on_carta_tocada)
 		cartas_en_mesa.append(nueva_carta)
-		
-		# Si estamos en Web, damos un respiro al procesador cada 4 cartas
-		if OS.has_feature("web") and cartas_en_mesa.size() % 4 == 0:
-			await get_tree().process_frame
-		
-	# 1. Esperamos DOS fotogramas para asegurar que Godot registró todos los nodos nuevos
-	await get_tree().process_frame
-	await get_tree().process_frame 
 
-	# 1.5 NUCLEAR CHECK: Eliminar cualquier hijo extra que se haya colado mágicamente
-	while grid_container.get_child_count() > 32:
-		var last_child = grid_container.get_child(grid_container.get_child_count() - 1)
-		grid_container.remove_child(last_child)
-		last_child.queue_free()
-		print("¡ELIMINANDO CARTA EXTRA FORZOSAMENTE!")
-
-	# 2. Obligamos al contenedor a recalcular su tamaño real con las cartas dentro
+	# 4. Obligamos al contenedor a recalcular su tamaño real de forma forzosa
 	grid_container.reset_size()
-
-	# 3. Ahora sí, calculamos el centro perfecto con el tamaño real actualizado
 	grid_container.pivot_offset = grid_container.size / 2.0
 
-	# 4. Calculamos una escala dinámica para que siempre quepa en pantalla
+	# 5. Calculamos una escala dinámica 
 	var max_width = 1150.0
-	var max_height = 500.0 # Margen vertical generoso para los textos
+	var max_height = 500.0 
 	
 	var scale_x = max_width / grid_container.size.x
 	var scale_y = max_height / grid_container.size.y
 	
 	var final_scale = min(scale_x, scale_y)
-	final_scale = min(final_scale, 0.8) # Límite máximo para que no sean gigantes en Fácil
+	final_scale = min(final_scale, 0.8) 
 	
 	grid_container.scale = Vector2(final_scale, final_scale)
 
-	# 5. Centrado manual absoluto (Garantiza que se vea igual en Host y Cliente)
+	# 6. Centrado absoluto en la pantalla
 	var screen_size = Vector2(1280, 720) 
 	var scaled_size = grid_container.size * grid_container.scale
 	grid_container.global_position = (screen_size / 2.0) - (scaled_size / 2.0)
