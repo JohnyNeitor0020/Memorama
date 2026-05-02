@@ -33,9 +33,19 @@ func _ready() -> void:
 	# Ocultamos la fila 2 porque es online
 	fila_j2.hide()
 	input_j1.placeholder_text = "Ingresa tu nombre"
-	# Forzar teclado en móviles al tocar el input
-	input_j1.focus_entered.connect(func(): DisplayServer.virtual_keyboard_show(""))
-	
+	# Nuevo método usando JavaScript nativo para web móvil
+	input_j1.focus_entered.connect(func():
+		if OS.has_feature("web"):
+			# Lanzamos una alerta nativa del navegador
+			var js_name = JavaScriptBridge.eval("prompt('Ingresa tu nombre para jugar al Casino:', '');")
+			
+			# Si el jugador escribió algo y no le dio cancelar
+			if js_name != null and str(js_name).strip_edges() != "":
+				input_j1.text = str(js_name)
+			
+			# Soltamos el input para que no se cicle
+			input_j1.release_focus()
+	)	
 	# Señales nativas de la API Multijugador de Godot
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	
