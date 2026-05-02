@@ -43,7 +43,6 @@ func _ready() -> void:
 	# 3. Iniciar juego (La lógica del turno la maneja el Host)
 	turn_manager.turno_cambiado.connect(_on_turno_cambiado)
 	
-	# Asegurar que los botones de fin de juego empiecen ocultos
 	ui_manager.boton_reiniciar.hide()
 	ui_manager.boton_salir.show() # El botón de Menú (Salir) debe estar siempre visible
 	

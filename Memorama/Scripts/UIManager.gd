@@ -2,7 +2,6 @@ extends Node
 
 class_name UIManager
 
-# --- REFERENCIAS (conéctalas desde Juego.tscn) ---
 @export var texto_estado: Label
 @export var texto_tiempo: Label
 @export var texto_puntos: Label

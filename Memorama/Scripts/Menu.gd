@@ -1,6 +1,5 @@
 extends Node2D
 
-# Las variables de red ahora vienen de GameData (que lee de .env)
 var dificultad_seleccionada := 8
 var mi_nombre := ""
 
@@ -31,14 +30,14 @@ func _ready() -> void:
 	
 	fila_j2.hide()
 	
-	# --- 1. DETECCIÓN MÓVIL NATIVA (SIN JAVASCRIPT) ---
+	# --- 1. DETECCIÓN MÓVIL NATIVA  ---
 	var es_movil = false
 	
 	# Godot 4 sabe mágicamente si el HTML5 corre en un celular Android o iOS
 	if OS.has_feature("web_android") or OS.has_feature("web_ios"):
 		es_movil = true
 		
-	# También bloqueamos por si Godot detecta pantalla táctil directamente
+	# Bloqueamos por si Godot detecta pantalla táctil directamente
 	if DisplayServer.is_touchscreen_available():
 		es_movil = true
 
@@ -54,10 +53,10 @@ func _ready() -> void:
 		input_j1.editable = true
 		input_j1.virtual_keyboard_enabled = false
 	# --------------------------------------------------
-	# --- 2. REPARACIÓN DEL BOTÓN "EMPEZAR JUEGO" ---
+	# --- 2. "EMPEZAR JUEGO" ---
 	BtnJugar.show() 
 	
-	# Si el botón estaba conectado a la función vieja (offline), la desconectamos
+	# Si el botón estaba conectado a la función offline, la desconectamos
 	if BtnJugar.pressed.is_connected(_on_btn_jugar_pressed):
 		BtnJugar.pressed.disconnect(_on_btn_jugar_pressed)
 		
@@ -182,7 +181,6 @@ func _on_btn_dificil_pressed() -> void:
 	_seleccionar_dificultad(16)
 
 func _on_btn_jugar_pressed() -> void:
-	# Esta función se mantiene por si en el futuro decides 
 	# volver a conectar el modo local/offline.
 	pass
 
@@ -297,7 +295,7 @@ func _on_join_pressed() -> void:
 	if mi_nombre == "":
 		mi_nombre = "Jugador"
 
-	# Mostrar el cuadro de espera con diseño premium
+	# Mostrar el cuadro de espera
 	panel_espera.show()
 	BtnJugar.hide()
 
