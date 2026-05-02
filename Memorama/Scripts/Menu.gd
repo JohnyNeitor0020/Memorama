@@ -5,6 +5,7 @@ extends Node2D
 var dificultad_seleccionada := 8
 var mi_nombre := ""
 var nombre_en_proceso := false
+var js_callback 
 
 @onready var BtnJugar: Control =$CanvasLayer/BtnJugar
 @onready var fila_j1: Control = $CanvasLayer/FilaJ1
@@ -35,42 +36,45 @@ func _ready() -> void:
 	fila_j2.hide()
 	input_j1.placeholder_text = "Ingresa tu nombre"
 	
+	# --- SOLUCIÓN DEFINITIVA ANTI-PANTALLA NEGRA ---
 	input_j1.virtual_keyboard_enabled = false
 	
+	if OS.has_feature("web"):
+		# Creamos el puente asíncrono para que JS hable con Godot sin congelarlo
+		js_callback = JavaScriptBridge.create_callback(_resultado_del_prompt)
+		var js_window = JavaScriptBridge.get_interface("window")
+		js_window.recibir_nombre_godot = js_callback
+
 	input_j1.gui_input.connect(func(event: InputEvent):
-		# Detectamos toque de pantalla O click de mouse, y validamos que sea cuando "presiona" (no cuando suelta)
 		if (event is InputEventMouseButton or event is InputEventScreenTouch) and event.is_pressed():
-			
-			# Si ya está abierta la ventana, ignoramos los demás toques
 			if nombre_en_proceso:
 				return
-				
-			nombre_en_proceso = true # Ponemos el candado
+			nombre_en_proceso = true
 			
 			if OS.has_feature("web"):
-				var js_name = JavaScriptBridge.eval("window.prompt('Ingresa tu nombre para jugar al Casino:', '');")
-				
-				if js_name != null and str(js_name).strip_edges() != "":
-					input_j1.text = str(js_name)
-				
-				input_j1.release_focus()
-				input_j1.accept_event()
-			
-			# Esperamos medio segundo antes de quitar el candado para evitar doble-clicks rápidos
-			await get_tree().create_timer(0.5).timeout
-			nombre_en_proceso = false # Quitamos el candado
+				# El setTimeout retrasa la ventana 50 milisegundos.
+				# Esto le da tiempo a Godot de terminar de dibujar y evita el crasheo.
+				JavaScriptBridge.eval("setTimeout(function() { var n = window.prompt('Ingresa tu nombre para jugar:'); window.recibir_nombre_godot(n); }, 50);")
+			else:
+				nombre_en_proceso = false # Si es en PC, no bloqueamos nada
 	)	
-	# ------------------------------------------
-	# Señales nativas de la API Multijugador de Godot
+	# -----------------------------------------------
+	
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
-	
 	_crear_botones_multijugador()
-	
 	# AUTO-HOST PARA SERVIDORES (Render)
 	if DisplayServer.get_name() == "headless":
 		print("Modo servidor (headless) detectado. Auto-hosteando...")
 		call_deferred("_on_host_pressed")
-
+# Esta función es llamada automáticamente por JavaScript cuando el usuario le da Aceptar
+func _resultado_del_prompt(args):
+	nombre_en_proceso = false # Quitamos el candado
+	
+	if args.size() > 0 and args[0] != null:
+		var nombre_escrito = str(args[0]).strip_edges()
+		if nombre_escrito != "":
+			input_j1.text = nombre_escrito
+			
 func _crear_botones_multijugador() -> void:
 	# 1. Ocultar el botón original
 	BtnJugar.hide()
