@@ -25,40 +25,36 @@ var vbox_botones: VBoxContainer
 var panel_espera: Panel
 
 func _ready() -> void:
-	name = "Menu" # Forzar nombre para que el servidor y cliente coincidan en las rutas de RPC
+	name = "Menu" 
 	_crear_estilos()
-	_crear_panel_espera() # Inicializar el modal de espera
+	_crear_panel_espera() 
 	_seleccionar_dificultad(8)
 	slider_volumen.value_changed.connect(_on_volumen_cambiado)
 	slider_volumen.value = 0.5
 	
-	# Ocultamos la fila 2 porque es online
 	fila_j2.hide()
-	input_j1.placeholder_text = "Ingresa tu nombre"
 	
-	# --- SOLUCIÓN DEFINITIVA ANTI-PANTALLA NEGRA ---
-	input_j1.virtual_keyboard_enabled = false
+	# --- DETECCIÓN INTELIGENTE DE PC vs CELULAR ---
+	var es_movil = false
 	
 	if OS.has_feature("web"):
-		# Creamos el puente asíncrono para que JS hable con Godot sin congelarlo
-		js_callback = JavaScriptBridge.create_callback(_resultado_del_prompt)
-		var js_window = JavaScriptBridge.get_interface("window")
-		js_window.recibir_nombre_godot = js_callback
+		# Le preguntamos a JavaScript si el navegador es de un dispositivo móvil
+		var resultado_js = JavaScriptBridge.eval("/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);")
+		if resultado_js == true:
+			es_movil = true
 
-	input_j1.gui_input.connect(func(event: InputEvent):
-		if (event is InputEventMouseButton or event is InputEventScreenTouch) and event.is_pressed():
-			if nombre_en_proceso:
-				return
-			nombre_en_proceso = true
-			
-			if OS.has_feature("web"):
-				# El setTimeout retrasa la ventana 50 milisegundos.
-				# Esto le da tiempo a Godot de terminar de dibujar y evita el crasheo.
-				JavaScriptBridge.eval("setTimeout(function() { var n = window.prompt('Ingresa tu nombre para jugar:'); window.recibir_nombre_godot(n); }, 50);")
-			else:
-				nombre_en_proceso = false # Si es en PC, no bloqueamos nada
-	)	
-	# -----------------------------------------------
+	if es_movil:
+		# ¡MODO CELULAR: A PRUEBA DE EXPLOSIONES!
+		var numero_random = randi() % 1000
+		input_j1.text = "Movil_" + str(numero_random)
+		input_j1.editable = false
+		input_j1.virtual_keyboard_enabled = false
+	else:
+		# ¡MODO PC: VÍA LIBRE PARA ESCRIBIR!
+		input_j1.placeholder_text = "Ingresa tu nombre"
+		input_j1.editable = true
+		input_j1.virtual_keyboard_enabled = false # Lo apagamos por si acaso, en PC usamos el teclado físico
+	# ----------------------------------------------
 	
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	_crear_botones_multijugador()
